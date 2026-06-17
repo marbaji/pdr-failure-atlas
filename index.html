@@ -1,0 +1,1358 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Failure-Mode Atlas - Proof-Driven Requirements</title>
+<meta name="description" content="Interactive companion to the essay 'Proof-Driven Requirements': 19 agent failure modes across six families.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400;1,6..72,500&#038;family=Archivo:wght@500;600;700&#038;family=IBM+Plex+Mono:wght@400;500&#038;display=swap" rel="stylesheet">
+<style>
+.ptr-scope { --paper: #ffffff;
+    --card: #ffffff;
+    --ink: #211f1a;
+    --ink-2: #5f5a4f;
+    --ink-3: #98917f;
+    --hair: #e9e4d7;
+    --hair-2: #d9d2c0;
+    --accent: #b4501e;
+    --accent-soft: #f6ece4;
+    --serif: "Newsreader", Georgia, "Times New Roman", serif;
+    --sans: "Archivo", "Helvetica Neue", sans-serif;
+    --mono: "IBM Plex Mono", ui-monospace, Menlo, monospace; }
+.ptr-scope, .ptr-scope * { margin: 0; padding: 0; box-sizing: border-box; }
+.ptr-scope { background: var(--paper); color: var(--ink);
+    font-family: var(--serif); font-size: 1.125rem; line-height: 1.72;
+    -webkit-font-smoothing: antialiased; }
+.ptr-scope .post { max-width: 42rem; margin: 0 auto; padding: 2.5rem 1.25rem 5rem; }
+.ptr-scope .crumb { font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-3); }
+.ptr-scope h1 { font-family: var(--serif); font-weight: 500; font-size: clamp(2rem, 6vw, 2.75rem);
+    line-height: 1.12; letter-spacing: -0.01em; margin: 0.9rem 0 0; }
+.ptr-scope h1 em { font-style: italic; }
+.ptr-scope .dek { margin-top: 1rem; font-size: 1.22rem; line-height: 1.55; color: var(--ink-2); font-style: italic; }
+.ptr-scope .byline { margin-top: 1.5rem; padding: 1rem 0; border-top: 1px solid var(--hair); border-bottom: 1px solid var(--hair);
+    font-family: var(--sans); font-size: 0.82rem; color: var(--ink-2); display: flex; gap: 0.5rem; flex-wrap: wrap; }
+.ptr-scope .byline b { color: var(--ink); font-weight: 600; }
+.ptr-scope .byline span + span::before { content: "·"; margin-right: 0.5rem; color: var(--ink-3); }
+.ptr-scope article p { margin: 1.15rem 0; }
+.ptr-scope article h2 { font-family: var(--sans); font-weight: 700; font-size: 1.35rem; letter-spacing: -0.01em;
+    margin: 3rem 0 0.4rem; line-height: 1.25; }
+.ptr-scope article h3 { font-family: var(--sans); font-weight: 600; font-size: 1.05rem; margin: 2rem 0 0.3rem; }
+.ptr-scope article a { color: var(--accent); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 2px; }
+.ptr-scope article strong { font-weight: 600; }
+.ptr-scope blockquote { margin: 1.6rem 0; padding: 0.2rem 0 0.2rem 1.2rem; border-left: 3px solid var(--accent);
+    font-style: italic; font-size: 1.18rem; color: var(--ink-2); }
+.ptr-scope .smallcaps { font-family: var(--mono); font-size: 0.74rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-3); }
+.ptr-scope ul.beat-key { margin: 1.1rem 0 1.1rem; padding-left: 0; list-style: none; }
+.ptr-scope ul.beat-key li { margin: 0.45rem 0; padding-left: 1.1rem; position: relative; line-height: 1.55; }
+.ptr-scope ul.beat-key li::before { content: "•"; position: absolute; left: 0.1rem; color: var(--accent); font-size: 1.1em; line-height: 1.45; }
+.ptr-scope ul.beat-key .smallcaps { color: var(--accent); }
+.ptr-scope .seq { margin: 1.3rem 0; display: flex; flex-wrap: wrap; align-items: center; gap: 0.45rem; }
+.ptr-scope .seq .step { font-family: var(--sans); font-size: 0.8rem; font-weight: 600;
+    border: 1px solid var(--hair-2); border-radius: 999px; padding: 0.4rem 0.85rem; background: #f0ece0; color: #5f5a4f; }
+.ptr-scope .seq .arrow { color: var(--ink-3); font-family: var(--mono); }
+.ptr-scope .seq.pdr .step { border-color: var(--accent); color: var(--accent); background: var(--accent-soft); }
+.ptr-scope .seq-label { font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-3); margin: 1.4rem 0 0.4rem; }
+.ptr-scope .versus { margin: 1.8rem 0 2rem; border: 1px solid var(--hair-2); border-radius: 12px;
+    overflow: hidden; background: var(--card); box-shadow: 0 1px 3px rgba(60,50,30,0.05);
+    padding-bottom: 0.6rem; }
+.ptr-scope .vs-heads { display: grid; grid-template-columns: 1fr 1fr; }
+.ptr-scope .vs-head { padding: 0.85rem 1rem 0.75rem; font-family: var(--sans); font-weight: 700;
+    font-size: 0.98rem; text-align: center; line-height: 1.2; }
+.ptr-scope .vs-head small { display: block; font-weight: 500; font-family: var(--mono); font-size: 0.63rem;
+    letter-spacing: 0.1em; text-transform: uppercase; margin-top: 0.3rem; color: var(--ink-3); }
+.ptr-scope .vs-head.left { background: #f0ece0; color: var(--ink-2); border-bottom: 2px solid var(--hair-2); }
+.ptr-scope .vs-head.right { background: var(--accent-soft); color: var(--accent); border-bottom: 2px solid var(--accent); }
+.ptr-scope .vs-head.right small { color: var(--accent); opacity: 0.75; }
+.ptr-scope .vs-dim { font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.13em; text-transform: uppercase;
+    color: var(--ink-3); padding: 0.65rem 1rem 0.3rem; display: flex; align-items: center; gap: 0.6rem; }
+.ptr-scope .vs-dim::before, .ptr-scope .vs-dim::after { content: ""; flex: 1; height: 1px; background: var(--hair); }
+.ptr-scope .vs-pair { display: grid; grid-template-columns: 1fr 1fr; }
+.ptr-scope .vs-cell { padding: 0.65rem 1rem 0.3rem; font-size: 0.93rem; line-height: 1.5; text-align: center;
+    display: flex; align-items: center; justify-content: center; }
+.ptr-scope .vs-cell.left { color: var(--ink-2); border-right: 1px dashed var(--hair-2); }
+.ptr-scope .vs-cell.right { font-weight: 500; }
+@media (max-width: 540px) {
+.ptr-scope .vs-cell { font-size: 0.84rem; padding: 0.55rem 0.6rem 0.25rem; }
+.ptr-scope .vs-head { font-size: 0.88rem; padding: 0.7rem 0.6rem 0.6rem; }
+}
+.ptr-scope .atlas-static { border-radius: 10px; margin-top: 1.2rem; }
+.ptr-scope .static-note { font-style: italic; font-size: 0.95rem; line-height: 1.6;
+    margin: 2rem 0 0.6rem; padding: 0.8rem 1.1rem;
+    background: #ffe97a; color: #4a3d00; border-radius: 8px; }
+.ptr-scope .atlas-static details.more-cards { border-top: 1px solid var(--hair); }
+.ptr-scope .atlas-static details.more-cards summary { font-family: var(--sans); font-size: 0.78rem; font-weight: 600; color: var(--accent);
+    padding: 0.8rem 1.3rem; cursor: pointer; }
+.ptr-scope .atlas-static details.more-cards .slide { border-top: 1px dashed var(--hair); }
+.ptr-scope .atlas-shell { margin: 2.2rem 0 0; }
+.ptr-scope .atlas-tabwrap { position: sticky; top: 0; z-index: 20;
+    background: var(--paper); padding: 0.8rem 0 0; }
+.ptr-scope .atlas-tabs { display: flex; align-items: flex-end; gap: 0.3rem;
+    overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+.ptr-scope .tab-more { position: absolute; right: 0; bottom: 0; width: 3.2rem; height: 2.6rem;
+    display: flex; align-items: center; justify-content: flex-end;
+    padding-right: 0.2rem; pointer-events: none;
+    background: linear-gradient(90deg, transparent, var(--paper) 60%);
+    color: var(--accent); font-size: 1.35rem; font-family: var(--sans);
+    opacity: 0; transition: opacity 0.2s; }
+.ptr-scope .atlas-tabwrap.more .tab-more { opacity: 1; }
+.ptr-scope .atlas-tabs::-webkit-scrollbar { display: none; }
+.ptr-scope .ftab { font-family: var(--sans); font-size: 0.8rem; font-weight: 600;
+    color: var(--ink-2); background: #f0ece0;
+    border: 1px solid var(--hair-2); border-bottom: none;
+    border-radius: 10px 10px 0 0;
+    padding: 0.5rem 0.85rem 0.6rem; cursor: pointer;
+    white-space: nowrap; flex-shrink: 0; min-height: 42px;
+    position: relative; top: 1px;
+    transition: background 0.2s, color 0.2s, padding 0.2s; }
+.ptr-scope .ftab .ftab-letter { font-family: var(--mono); font-size: 0.68rem; font-weight: 500;
+    color: var(--accent); margin-right: 0.35rem; }
+.ptr-scope .ftab:hover, .ptr-scope .ftab:focus-visible { color: var(--ink); outline: none; }
+.ptr-scope .ftab.on { background: var(--panel-tint, var(--card)); color: var(--ink);
+    padding-top: 0.7rem; }
+.ptr-scope .atlas-panel { border: 1px solid var(--hair-2); border-radius: 0 10px 10px 10px;
+    background: var(--panel-tint, var(--card));
+    padding: 1.3rem 1.1rem 1.6rem;
+    transition: background-color 0.35s ease; }
+@media (min-width: 700px) {
+.ptr-scope .atlas-panel { padding: 1.7rem 1.6rem 2rem; }
+}
+.ptr-scope .family { margin: 0; }
+.ptr-scope .family-rule { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.2rem; }
+.ptr-scope .family-chip { font-family: var(--mono); font-size: 0.74rem; font-weight: 500; color: var(--accent);
+    border: 1px solid var(--accent); border-radius: 4px; padding: 0.1rem 0.5rem; }
+.ptr-scope .family-rule h2 { margin: 0; }
+.ptr-scope .mode { margin: 2.2rem 0 0; }
+.ptr-scope .mode:first-of-type { margin-top: 1.6rem; }
+.ptr-scope .mode-head { display: flex; align-items: baseline; gap: 0.6rem; }
+.ptr-scope .mode-id { font-family: var(--mono); font-size: 0.78rem; color: var(--accent); font-weight: 500; }
+.ptr-scope .mode h3 { margin: 0; font-size: 1.18rem; }
+.ptr-scope .mode-hook { color: var(--ink-2); font-style: italic; font-size: 1rem; margin-top: 0.25rem; }
+.ptr-scope .family-intro { color: var(--ink-2); font-size: 1rem; margin: 0.4rem 0 1rem; }
+.ptr-scope .carousel { margin-top: 1rem; border: 1px solid var(--hair-2); border-radius: 10px; background: var(--card); overflow: hidden; box-shadow: 0 1px 3px rgba(60,50,30,0.05); }
+.ptr-scope .track { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none;
+    -webkit-overflow-scrolling: touch; }
+.ptr-scope .track::-webkit-scrollbar { display: none; }
+.ptr-scope .slide { min-width: 100%; scroll-snap-align: start; scroll-snap-stop: always; padding: 1.25rem 1.3rem 1.35rem; }
+.ptr-scope .slide-label { font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--accent); margin-bottom: 0.55rem; display: flex; align-items: center; gap: 0.5rem; }
+.ptr-scope .slide-label::after { content: ""; flex: 1; height: 1px; background: var(--hair); }
+.ptr-scope .slide p { margin: 0 0 0.8rem; font-size: 1.02rem; line-height: 1.66; }
+.ptr-scope .slide p:last-child { margin-bottom: 0; }
+.ptr-scope .slide .req { font-style: italic; font-weight: 600; font-size: 1.1rem; line-height: 1.5;
+    padding: 0.55rem 0 0.55rem 1rem; border-left: 3px solid var(--accent);
+    background: var(--accent-soft); border-radius: 0 6px 6px 0; }
+.ptr-scope .slide code { font-family: var(--mono); font-size: 0.82em; background: #f4f1e8; border-radius: 4px; padding: 0.06em 0.35em; }
+.ptr-scope .slide .stat { color: var(--accent); font-weight: 600; }
+.ptr-scope .carousel-nav { display: flex; align-items: center; justify-content: space-between;
+    padding: 0.55rem 0.8rem; border-top: 1px solid var(--hair); background: #fbf9f3; }
+.ptr-scope .cnav-btn { font-family: var(--sans); font-size: 0.78rem; font-weight: 600; color: var(--ink-2);
+    background: none; border: 1px solid var(--hair-2); border-radius: 6px;
+    padding: 0.45rem 0.8rem; cursor: pointer; min-height: 40px; min-width: 44px;
+    transition: color 0.15s, border-color 0.15s; }
+.ptr-scope .cnav-btn:hover, .ptr-scope .cnav-btn:focus-visible { color: var(--accent); border-color: var(--accent); outline: none; }
+.ptr-scope .cnav-btn:disabled { opacity: 0.35; cursor: default; }
+.ptr-scope .dots { display: flex; gap: 0.45rem; }
+.ptr-scope .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--hair-2); transition: background 0.2s, transform 0.2s; }
+.ptr-scope .dot.on { background: var(--accent); transform: scale(1.25); }
+.ptr-scope .end-sig { display: flex; align-items: center; gap: 1.1rem; margin: 3.5rem 0 1.5rem; }
+.ptr-scope .end-sig img { width: 64px; height: 64px; flex-shrink: 0; }
+.ptr-scope .end-sig .sig-line { flex: 1; height: 1px; background: var(--hair-2); }
+.ptr-scope .endnote { font-size: 0.95rem; color: var(--ink-2); line-height: 1.6; margin: 0.8rem 0; }
+.ptr-scope .endnote .smallcaps { display: inline-block; margin-bottom: 0.3rem; }
+@media (min-width: 700px) {
+.ptr-scope .post { padding: 4rem 1.5rem 6rem; }
+.ptr-scope .slide { padding: 1.5rem 1.8rem 1.6rem; }
+}
+/* ---------- WordPress theme defense (everything the theme is known to override) ---------- */
+.ptr-scope { background: #ffffff; }
+.ptr-scope article p { font-family: var(--serif) !important; font-size: 1.125rem !important; line-height: 1.72 !important; margin: 1.15rem 0 !important; color: var(--ink) !important; }
+.ptr-scope p:empty { display: none !important; }
+.ptr-scope article > br, .ptr-scope .seq br, .ptr-scope .versus br, .ptr-scope .vs-heads br, .ptr-scope .vs-pair br { display: none !important; }
+.ptr-scope strong, .ptr-scope b { font-family: inherit !important; font-size: inherit !important; line-height: inherit !important; font-weight: 600 !important; display: inline !important; color: inherit !important; letter-spacing: normal !important; }
+.ptr-scope em, .ptr-scope i { font-family: inherit !important; font-size: inherit !important; line-height: inherit !important; }
+.ptr-scope h1 { font-family: var(--serif) !important; font-weight: 500 !important; font-size: clamp(2rem, 6vw, 2.75rem) !important; line-height: 1.12 !important; color: var(--ink) !important; margin: 0.9rem 0 0 !important; }
+.ptr-scope article h2 { font-family: var(--sans) !important; font-weight: 700 !important; font-size: 1.35rem !important; line-height: 1.25 !important; margin: 3rem 0 0.4rem !important; color: var(--ink) !important; }
+.ptr-scope article h3 { font-family: var(--sans) !important; font-weight: 600 !important; font-size: 1.05rem !important; margin: 2rem 0 0.3rem !important; color: var(--ink) !important; }
+.ptr-scope .mode h3 { margin: 0 !important; font-size: 1.18rem !important; }
+.ptr-scope .family-rule h2 { margin: 0 !important; }
+.ptr-scope .seq { display: flex !important; flex-wrap: wrap !important; align-items: center !important; gap: 0.45rem !important; }
+.ptr-scope .seq .step { display: inline-flex !important; align-items: center !important; }
+.ptr-scope .seq .step, .ptr-scope .seq .arrow { margin: 0 !important; }
+.ptr-scope .track { display: flex !important; flex-direction: row !important; overflow-x: auto !important; scroll-snap-type: x mandatory !important; }
+.ptr-scope .slide { min-width: 100% !important; }
+.ptr-scope .vs-heads, .ptr-scope .vs-pair { display: grid !important; grid-template-columns: 1fr 1fr !important; }
+.ptr-scope ul.beat-key { list-style: none !important; padding-left: 0 !important; margin: 1.1rem 0 !important; }
+.ptr-scope ul.beat-key li { margin: 0.45rem 0 !important; padding-left: 1.1rem !important; }
+.ptr-scope blockquote { background: none !important; border-left: 3px solid var(--accent) !important; padding: 0.2rem 0 0.2rem 1.2rem !important; margin: 1.6rem 0 !important; font-style: italic !important; font-size: 1.18rem !important; color: var(--ink-2) !important; }
+.ptr-scope blockquote p { margin: 0 !important; }
+.ptr-scope article a { color: var(--accent) !important; text-decoration: underline !important; box-shadow: none !important; }
+.ptr-scope button.ftab, .ptr-scope button.cnav-btn { -webkit-appearance: none !important; appearance: none !important; text-transform: none !important; letter-spacing: normal !important; box-shadow: none !important; margin: 0 !important; }
+.ptr-scope button.cnav-btn { background: none !important; color: var(--ink-2) !important; border: 1px solid var(--hair-2) !important; }
+.ptr-scope button.cnav-btn:hover, .ptr-scope button.cnav-btn:focus-visible { color: var(--accent) !important; border-color: var(--accent) !important; }
+.ptr-scope .slide code { font-family: var(--mono) !important; font-size: 0.82em !important; background: #f4f1e8 !important; padding: 0.06em 0.35em !important; }
+/* component-exact margins: the broad article-p rule above is a fallback for plain
+   prose; components re-assert their own design values so theme margin quirks and
+   the fallback can't inflate them */
+.ptr-scope .slide p { margin: 0 0 0.8rem !important; font-size: 1.02rem !important; line-height: 1.66 !important; }
+.ptr-scope .slide p:last-child { margin-bottom: 0 !important; }
+.ptr-scope .slide .req { padding: 0.55rem 0 0.55rem 1rem !important; }
+.ptr-scope .slide-label { margin: 0 0 0.55rem !important; }
+.ptr-scope .mode { margin: 2.2rem 0 0 !important; }
+.ptr-scope .mode-hook { margin: 0.25rem 0 0 !important; font-size: 1rem !important; }
+.ptr-scope .mode-head { margin: 0 !important; }
+.ptr-scope .family-rule { margin: 0 0 0.2rem !important; padding: 0 !important; }
+.ptr-scope .family-chip { margin: 0 !important; }
+.ptr-scope .carousel { margin: 1rem 0 0 !important; }
+.ptr-scope .atlas-panel .family { margin: 0 !important; }
+.ptr-scope .vs-dim { padding: 0.65rem 1rem 0.3rem !important; margin: 0 !important; }
+.ptr-scope .vs-cell { padding: 0.65rem 1rem 0.3rem !important; margin: 0 !important; }
+.ptr-scope .vs-head { padding: 0.85rem 1rem 0.75rem !important; margin: 0 !important; }
+.ptr-scope .seq-label { margin: 1.4rem 0 0.4rem !important; }
+.ptr-scope .dek { margin: 1rem 0 0 !important; }
+.ptr-scope .byline { margin: 1.5rem 0 0 !important; padding: 1rem 0 !important; }
+.ptr-scope .endnote { font-size: 0.95rem !important; margin: 1.15rem 0 !important; }
+.ptr-scope .static-note { margin: 2rem 0 0.6rem !important; padding: 0.8rem 1.1rem !important; font-size: 0.95rem !important; }
+/* theme forces p { font-weight: 700 } and em { font-style: normal } — undo both */
+.ptr-scope { font-weight: 400 !important; }
+.ptr-scope article p, .ptr-scope .slide p, .ptr-scope li, .ptr-scope .vs-cell, .ptr-scope .endnote { font-weight: 400 !important; }
+.ptr-scope em, .ptr-scope i, .ptr-scope strong, .ptr-scope b, .ptr-scope code, .ptr-scope .stat { display: inline !important; }
+.ptr-scope em, .ptr-scope i { font-style: italic !important; font-weight: inherit !important; }
+.ptr-scope .dek, .ptr-scope blockquote, .ptr-scope .mode-hook, .ptr-scope .static-note { font-style: italic !important; font-weight: 400 !important; }
+.ptr-scope .slide .req { font-style: italic !important; font-weight: 600 !important; }
+.ptr-scope h1 { font-weight: 500 !important; }
+.ptr-scope .byline b { font-weight: 600 !important; }
+.ptr-scope .vs-cell.right { font-weight: 500 !important; }
+.ptr-scope .stat { font-weight: 600 !important; }
+/* theme sets inline-block on block elements, which kills margin-collapsing —
+   adjacent paragraph margins stack (1.15rem + 1.15rem) instead of overlapping */
+.ptr-scope article p, .ptr-scope blockquote, .ptr-scope article h2, .ptr-scope article h3, .ptr-scope h1, .ptr-scope ul.beat-key, .ptr-scope .mode, .ptr-scope .seq-label, .ptr-scope .dek, .ptr-scope .slide-label, .ptr-scope .crumb { display: block !important; }
+.ptr-scope ul.beat-key li { display: list-item !important; }
+.ptr-scope .carousel-nav { display: flex !important; align-items: center !important; justify-content: space-between !important; padding: 0.55rem 0.8rem !important; margin: 0 !important; }
+.ptr-scope .cnav-btn { padding: 0.45rem 0.8rem !important; min-height: 40px !important; min-width: 44px !important; font-size: 0.78rem !important; line-height: normal !important; }
+.ptr-scope .dots { display: flex !important; gap: 0.45rem !important; margin: 0 !important; }
+.ptr-scope .dot { width: 7px !important; height: 7px !important; margin: 0 !important; padding: 0 !important; }
+/* versus-table interior matches the original page's paper color (Mo 2026-06-11) */
+.ptr-scope .versus { background: #fdfcf8 !important; }
+/* end-of-article signature: headshot sitting in the separator line, text below */
+.ptr-scope .end-sig { display: flex !important; align-items: center !important; gap: 1.1rem !important; margin: 3.5rem 0 1.5rem !important; }
+.ptr-scope .end-sig img { width: 64px !important; height: 64px !important; margin: 0 !important; max-width: 64px !important; box-shadow: none !important; }
+.ptr-scope .sig-line { display: block !important; flex: 1 !important; height: 1px !important; background: #d9d2c0 !important; margin: 0 !important; }
+.ptr-scope .endnote { display: block !important; font-size: 0.95rem !important; line-height: 1.6 !important; color: #5f5a4f !important; margin: 0.8rem 0 !important; font-weight: 400 !important; }
+/* Read Meter's auto word-count estimate ("28 mins read") contradicts the
+   byline's deliberate ~9 min essay + ~15 min catalog split; plugin has no
+   per-post disable, so hide its header span on this post only. Plugin sets
+   display:flex !important at two-class specificity, so match and exceed it */
+body .entry-content .bsf-rt-reading-time, body .post-content .bsf-rt-reading-time, .bsf-rt-reading-time { display: none !important; }
+
+/* full-page host wrapper (chrome-free) */
+html, body { background: #fbf9f4; }
+.ptr-scope { max-width: 760px; margin: 0 auto; padding: 1.6rem 1.15rem 1rem; }
+.page-foot { max-width: 760px; margin: 1.5rem auto 3rem; padding: 1.1rem 1.15rem 0;
+  border-top: 1px solid var(--hair); font-family: var(--sans); font-size: 0.85rem;
+  line-height: 1.55; color: var(--ink-2); text-align: center; }
+.page-foot a { color: var(--accent); text-decoration: underline; text-underline-offset: 2px; }
+@media (max-width: 600px) { .ptr-scope { padding: 1rem 0.8rem 0.5rem; } }
+</style>
+</head><body style="margin:0;">
+<div class="ptr-scope">
+<div id="atlas"> <!-- STATIC FALLBACK (auto-generated from the MODES array below) for JS-disabled viewers: iMessage/Quick Look previews, reader modes, some email clients. Browsers with JS replace this whole div via atlas.innerHTML. Per mode: card 1 (The Wall) visible, cards 2-4 inside a native 
+
+<details> toggle (works without JS in real browsers). If you edit MODES, regenerate in a browser console: let out=""; for (const k of ["A","B","C","D","E","F"]) { showFamily(k,false); const c=document.querySelector(".atlas-panel").cloneNode(true); for (const car of c.querySelectorAll(".carousel")) { const sl=[...car.querySelectorAll(".slide")]; const labs=sl.slice(1).map(x=>x.querySelector(".slide-label").textContent.split("— ")[1]); car.innerHTML = sl[0].outerHTML + `
+
+<details class="more-cards">
+
+<summary>Show the other three cards — ${labs.join(", ")}</summary>
+
+${sl.slice(1).map(x=>x.outerHTML).join("")}</details>
+
+`; } out+=`
+
+<div class="atlas-panel atlas-static" style="--panel-tint:${TINTS[k]}">${c.innerHTML}</div>
+
+\n`; } copy(out)  // paste over the static panels below --> 
+<p class="static-note" id="nojs-note">You’re viewing the JavaScript-off version of this page (message previews and Quick Look turn JavaScript off). Each failure mode below shows its first card, with the rest behind a “Show the other three cards” toggle. If the toggle doesn’t respond in your viewer, open this file in a web browser — that’s also where the full tabbed experience lives.</p>
+<p> <script>document.getElementById('nojs-note').remove();</script> </p>
+<div class="atlas-panel atlas-static" style="--panel-tint:#f8ece2">
+<div class="family">
+<div class="family-rule"><span class="family-chip">Family A · #1–3 of 19</span>
+<h2>Drift</h2>
+</div>
+<div class="mode">
+<div class="mode-head"><span class="mode-id">A1</span>
+<h3>Semantic Drift under Ambiguity</h3>
+</div>
+<p class="mode-hook">An instruction that sounds specific has several legitimate readings — and the model picks one silently.</p>
+<div class="carousel" data-id="A1">
+<div class="slide">
+<div class="slide-label">1 / 4 — The Wall</div>
+<p>Most instructions you give an agent are ambiguous without you noticing. “Analyze this data for multiple years if this district has been with us for more than 1 year” sounds specific. It isn’t — there are several legitimate analyses that phrase could mean, and the model will pick one for you: silently, plausibly, and possibly a different one tomorrow. Nothing about the output looks broken, because every reading produces a clean-looking result.</p>
+</div>
+<details class="more-cards">
+<summary>Show the other three cards — The Proof, The Requirement, The Fix Shape</summary>
+<div class="slide">
+<div class="slide-label">2 / 4 — The Proof</div>
+<p>In my system, a multi-year analysis could legitimately mean at least three different things (tracking the same students’ growth across years, comparing this year’s cohort against last year’s, or trending school-wide results over time). So I defined the three ways we do it and wrote selection rules based on the shape of the district’s data. That handles the ambiguity machines can settle.</p>
+<p>For the ambiguity they can’t: when a renewal-report request hits a district running our courses in multiple subjects, the system stops and asks me which subject I mean (or whether I want all of them) instead of guessing.</p>
+</div>
+<div class="slide">
+<div class="slide-label">3 / 4 — The Requirement</div>
+<p class="req">Ambiguity resolves through a defined menu of interpretations with selection rules — and when the rules can’t decide, the system asks the operator instead of guessing.</p>
+</div>
+<div class="slide">
+<div class="slide-label">4 / 4 — The Fix Shape</div>
+<p>Enumerate the legitimate interpretations before the model ever meets them. Encode the rules for choosing. Gate whatever remains on a human. The model generates <em>within</em> a chosen interpretation — it never chooses silently.</p>
+</div>
+</details>
+</div></div>
+<div class="mode">
+<div class="mode-head"><span class="mode-id">A2</span>
+<h3>Semantic Drift under Clarity</h3>
+</div>
+<p class="mode-hook">The companion nobody warns you about: a perfectly clear spec still drifts on a long run.</p>
+<div class="carousel" data-id="A2">
+<div class="slide">
+<div class="slide-label">1 / 4 — The Wall</div>
+<p>Drift under ambiguity at least has a cause you can fix with clearer instructions. The nastier discovery: a completely unambiguous spec <em>also</em> drifts on a long run. The model shortcuts, conflates adjacent steps, re-derives a format from memory instead of re-reading the doc two files away. <strong>Length and repetition are the enemy, not vagueness.</strong></p>
+</div>
+<details class="more-cards">
+<summary>Show the other three cards — The Proof, The Requirement, The Fix Shape</summary>
+<div class="slide">
+<div class="slide-label">2 / 4 — The Proof</div>
+<p>I audited one end-to-end run of my report skill: <span class="stat">164 structured events emitted, six distinct drift modes</span> — with three correct reference docs sitting in the working directory the whole time. Separately, a 1,000-line skill spec that ran clean when I supervised it interactively started <strong>silently skipping steps</strong> the moment it ran as a background agent. Same spec. Same code. Same data.</p>
+</div>
+<div class="slide">
+<div class="slide-label">3 / 4 — The Requirement</div>
+<p class="req">Anything deterministic must be code, not prose the model re-interprets on every pass. The longer the run, the more this matters.</p>
+</div>
+<div class="slide">
+<div class="slide-label">4 / 4 — The Fix Shape</div>
+<p>A validating helper the model <em>calls with arguments</em> — it never writes the fixed shape itself. The clearer your prose, the more tempting it is to trust it. Don’t. Better prose isn’t the answer; <strong>not-prose</strong> is.</p>
+</div>
+</details>
+</div></div>
+<div class="mode">
+<div class="mode-head"><span class="mode-id">A3</span>
+<h3>Schema Improvisation</h3>
+</div>
+<p class="mode-hook">Asked for a fixed shape, the model invents a slightly better one.</p>
+<div class="carousel" data-id="A3">
+<div class="slide">
+<div class="slide-label">1 / 4 — The Wall</div>
+<p>Hand the model a strict schema and it improvises: promotes a subtype into the type field because it’s “more specific,” adds helper fields that seem useful, writes the file one directory up from where it belongs. Each deviation is locally reasonable. Every one breaks the downstream tools that parse the output.</p>
+</div>
+<details class="more-cards">
+<summary>Show the other three cards — The Proof, The Requirement, The Fix Shape</summary>
+<div class="slide">
+<div class="slide-label">2 / 4 — The Proof</div>
+<p>In that same 164-event audit: the subtype <code>sql_query</code> was promoted into the <code>type:</code> field on <span class="stat">39 of 164 events</span>; an invented <code>entry: START/END</code> field appeared on 34; nine invented subtypes fell outside the canonical enum; the journal landed in the wrong directory.</p>
+</div>
+<div class="slide">
+<div class="slide-label">3 / 4 — The Requirement</div>
+<p class="req">The producer of a fixed shape validates structure and rejects unknowns. The model passes data — never format.</p>
+</div>
+<div class="slide">
+<div class="slide-label">4 / 4 — The Fix Shape</div>
+<p>A small CLI owns the schema: it allocates IDs, stamps timestamps, hardcodes the path, validates every enum, rejects invented fields. Five of my six drift modes disappeared <em>by construction</em> — the model can’t drift a file it no longer writes.</p>
+</div>
+</details>
+</div></div>
+</div>
+</div>
+<div class="atlas-panel atlas-static" style="--panel-tint:#f9f1dd">
+<div class="family">
+<div class="family-rule"><span class="family-chip">Family B · #4–7 of 19</span>
+<h2>Trust</h2>
+</div>
+<div class="mode">
+<div class="mode-head"><span class="mode-id">B4</span>
+<h3>The Confident Fabrication</h3>
+</div>
+<p class="mode-hook">A number nobody computed, stated fluently.</p>
+<div class="carousel" data-id="B4">
+<div class="slide">
+<div class="slide-label">1 / 4 — The Wall</div>
+<p>The model states a metric that doesn’t match any query that ran — or types an “expected result” from its prior of what the data probably says. The sentence is grammatical, specific, and wrong. In a customer-facing report, a fabricated number is worse than no number.</p>
+</div>
+<details class="more-cards">
+<summary>Show the other three cards — The Proof, The Requirement, The Fix Shape</summary>
+<div class="slide">
+<div class="slide-label">2 / 4 — The Proof</div>
+<p>While registering a new SQL query with verified logic, the model hand-typed the expected result of that query instead of running it. The typed value was <span class="stat">530x off</span> from what the warehouse actually returned.</p>
+<p>This one incident put a hard gate on expectation strings (e.g. “this query should return X”): computed, never authored.</p>
+</div>
+<div class="slide">
+<div class="slide-label">3 / 4 — The Requirement</div>
+<p class="req">No value reaches output unless execution produced it during this run. Result strings bind to the query that made them — never to memory.</p>
+</div>
+<div class="slide">
+<div class="slide-label">4 / 4 — The Fix Shape</div>
+<p>Separate compute from narrate. Registering a metric forces the query to execute at registration time, so the recorded expectation is real by construction. The narrator may <em>reference</em> computed values by name; it can never mint one.</p>
+</div>
+</details>
+</div></div>
+<div class="mode">
+<div class="mode-head"><span class="mode-id">B5</span>
+<h3>Evidence Surface Inconsistency</h3>
+</div>
+<p class="mode-hook">The story and the evidence beside it disagree — or no one can see whether they agree.</p>
+<div class="carousel" data-id="B5">
+<div class="slide">
+<div class="slide-label">1 / 4 — The Wall</div>
+<p>A report has two surfaces: the narrative a human reads aloud, and the charts and tables beside it. If they’re built from different read paths they quietly diverge. My early reports retyped numbers into sentences, and a retyped number is a fork: the prose and the chart beside it can drift apart with no error anywhere.</p>
+<p>And there’s a deeper version: even when the two surfaces <em>do</em> agree, can a reviewer tell which sentences are anchored to data and which are authored prose?</p>
+</div>
+<details class="more-cards">
+<summary>Show the other three cards — The Proof, The Requirement, The Fix Shape</summary>
+<div class="slide">
+<div class="slide-label">2 / 4 — The Proof</div>
+<p>The fix: narrative templates carry tokens instead of numbers. A sentence is authored as <em>“{funnel_enrolled} students enrolled in ChalkTalk,”</em> where {funnel_enrolled} names a registered SQL query or Python calculation. At render time it becomes <em>“12,651 students enrolled in ChalkTalk.”</em></p>
+<p>Interpolated values render visibly distinct from authored prose — a reviewer sees at a glance which words are data, and can click a number to land on the query that produced it.</p>
+</div>
+<div class="slide">
+<div class="slide-label">3 / 4 — The Requirement</div>
+<p class="req">Every claim traces to a recorded event — and the trace is inspectable. Data-bound text and authored prose must be distinguishable at a glance.</p>
+</div>
+<div class="slide">
+<div class="slide-label">4 / 4 — The Fix Shape</div>
+<p>One read model for narrative and evidence: numbers live as tokens bound at render time, never retyped. A claims file with source and reasoning per claim; a halt when a narrative number matches no recorded event. Provenance that exists but can’t be read is provenance that doesn’t exist.</p>
+</div>
+</details>
+</div></div>
+<div class="mode">
+<div class="mode-head"><span class="mode-id">B6</span>
+<h3>The Sum That Doesn’t Add Up</h3>
+</div>
+<p class="mode-hook">Individually correct queries combine into nonsense. The join is where correctness dies.</p>
+<div class="carousel" data-id="B6">
+<div class="slide">
+<div class="slide-label">1 / 4 — The Wall</div>
+<p>Every input query is verified. The final numbers get fact-checked. The result is still wrong — because the corruption happened <em>in the middle</em>: a join fans out and silently inflates counts, an aggregation breaks across grade levels, a filter leaks rows from outside the year you declared. Nobody checks the middle, because each piece passed its own test.</p>
+</div>
+<details class="more-cards">
+<summary>Show the other three cards — The Proof, The Requirement, The Fix Shape</summary>
+<div class="slide">
+<div class="slide-label">2 / 4 — The Proof</div>
+<p>I built a whole validation layer because of this zone. The checks: <strong>grain</strong> (each row unique on declared columns, catching fan-out), <strong>rollup</strong> (recomputing the same number from its finest-grained rows gives the same total — one query checked against its own math), <strong>scope</strong> (no rows from outside the declared district, curriculum, and year), <strong>source-consistency</strong> (the declared table matches what the SQL actually joins), and <strong>reconciliation</strong> (separate outputs checked against each other — the counts published in one section must sum to the headline in another, and independent sources must agree within tolerance).</p>
+</div>
+<div class="slide">
+<div class="slide-label">3 / 4 — The Requirement</div>
+<p class="req">Declare invariants on the output shape — uniqueness, parts-equal-whole, no leakage — and mechanically verify them at every step. Verify the middle, not just the ends.</p>
+</div>
+<div class="slide">
+<div class="slide-label">4 / 4 — The Fix Shape</div>
+<p>The invariant rides as a declaration on the data model itself and is checked per-query at runtime. Severity is a product decision per constraint: fan-out and broken rollups <strong>halt</strong>; a possible scope leak <strong>proceeds but gets flagged</strong> where the human and the narrator both see it.</p>
+</div>
+</details>
+</div></div>
+<div class="mode">
+<div class="mode-head"><span class="mode-id">B7</span>
+<h3>The Correct Number, Wrong Reading</h3>
+</div>
+<p class="mode-hook">The data is right. The sentence makes the reader compute something false.</p>
+<div class="carousel" data-id="B7">
+<div class="slide">
+<div class="slide-label">1 / 4 — The Wall</div>
+<p>The subtlest trust failure I’ve hit: every value in the sentence is accurate, and the sentence still lies — because of how the values sit next to each other. The output of a report isn’t the number; it’s the meaning the reader walks away with.</p>
+</div>
+<details class="more-cards">
+<summary>Show the other three cards — The Proof, The Requirement, The Fix Shape</summary>
+<div class="slide">
+<div class="slide-label">2 / 4 — The Proof</div>
+<p>A report cover read: “reaching <span class="stat">334 of 440</span> enrolled students and a path to <strong>doubling</strong> the paired-evidence base.” Every number was right — the doubling meant 109 going to roughly 220. But put “doubling” next to “334 of 440” and the reader’s eye computes an impossible 668. Correct data, false reading.</p>
+</div>
+<div class="slide">
+<div class="slide-label">3 / 4 — The Requirement</div>
+<p class="req">Check how a number will be read, not only whether it is right. A multiplier must bind explicitly to its base.</p>
+</div>
+<div class="slide">
+<div class="slide-label">4 / 4 — The Fix Shape</div>
+<p>A render-time check for perception traps — mine detects a multiplier landing near an unrelated base and halts unless the sentence carries its own binding: “doubling (from 109 to ~220).” Data-correctness gates can’t catch this class. It needs its own gate.</p>
+</div>
+</details>
+</div></div>
+</div>
+</div>
+<div class="atlas-panel atlas-static" style="--panel-tint:#e9f2ec">
+<div class="family">
+<div class="family-rule"><span class="family-chip">Family C · #8–13 of 19</span>
+<h2>Orchestration</h2>
+</div>
+<div class="mode">
+<div class="mode-head"><span class="mode-id">C8</span>
+<h3>The Hidden Failure Cascade</h3>
+</div>
+<p class="mode-hook">No layer proved correctness — and the deeper the orchestration, the harder to localize.</p>
+<div class="carousel" data-id="C8">
+<div class="slide">
+<div class="slide-label">1 / 4 — The Wall</div>
+<p>One phase retrieves weak data. The next synthesizes on top of it. A third acts on the flawed synthesis. The final output sounds coherent and intelligent — because the last model in the chain is very good at sounding coherent. No layer actually proved anything, and the more sophisticated the orchestration, the more places the break can hide.</p>
+</div>
+<details class="more-cards">
+<summary>Show the other three cards — The Proof, The Requirement, The Fix Shape</summary>
+<div class="slide">
+<div class="slide-label">2 / 4 — The Proof</div>
+<p>My version: phase 2’s exact numbers reaching phase 3 as lossy conversational summary, then a hollow phase poisoning everything downstream while the final report read beautifully. Until each phase boundary became a checkable artifact, localizing a cascade meant re-reading a 90-minute transcript by hand.</p>
+</div>
+<div class="slide">
+<div class="slide-label">3 / 4 — The Requirement</div>
+<p class="req">Deep orchestration must decompose into phases that each prove their own correctness — or a coherent-sounding whole hides a broken part you cannot find.</p>
+</div>
+<div class="slide">
+<div class="slide-label">4 / 4 — The Fix Shape</div>
+<p>Checkpoints between phases — downstream reads the file, never the prior prose. Per-phase execution counts. Reconciliation at phase boundaries, so a dead layer surfaces after phase 1 instead of after the run. Orchestration depth raises the stakes of per-phase proof; it never lowers them.</p>
+</div>
+</details>
+</div></div>
+<div class="mode">
+<div class="mode-head"><span class="mode-id">C9</span>
+<h3>The Silent Skip / Phase Hollowing</h3>
+</div>
+<p class="mode-hook">A step quietly dropped — output still looks complete. Success by appearance.</p>
+<div class="carousel" data-id="C9">
+<div class="slide">
+<div class="slide-label">1 / 4 — The Wall</div>
+<p>A multi-step agent drops a step — or collapses a whole dispatch-subagents architecture into one inline pass — and still emits deliverables that look finished. From the outside: success. Underneath: hollow. This failure does not announce itself, ever.</p>
+</div>
+<details class="more-cards">
+<summary>Show the other three cards — The Proof, The Requirement, The Fix Shape</summary>
+<div class="slide">
+<div class="slide-label">2 / 4 — The Proof</div>
+<p>One run executed every phase <strong>inline</strong> instead of dispatching them: substantive-looking deliverables, <span class="stat">zero telemetry</span>, and about 115 false alarms from confused downstream checks. An earlier run had silently dropped an entire analysis phase and two customer PDFs — nothing checked for them, so nothing noticed. The hardening that followed cut detection from <span class="stat">~90 minutes to ~30 seconds</span>.</p>
+</div>
+<div class="slide">
+<div class="slide-label">3 / 4 — The Requirement</div>
+<p class="req">Every mandated step proves it ran. A step that cannot show execution evidence halts the run. Zero evidence is a failure — never a clean run.</p>
+</div>
+<div class="slide">
+<div class="slide-label">4 / 4 — The Fix Shape</div>
+<p>A completion contract (a machine-readable list of what each phase must produce) plus per-phase execution counts means a hollow phase halts before the next one builds on it. The elegant endgame: the retry path <em>re-dispatches</em> the phase, and a dispatched subagent physically cannot run inline — the architecture cures its own failure mode.</p>
+</div>
+</details>
+</div></div>
+<div class="mode">
+<div class="mode-head"><span class="mode-id">C10</span>
+<h3>The Lying Recorder</h3>
+</div>
+<p class="mode-hook">The telemetry itself silently fails. The run looks clean because nothing was watching.</p>
+<div class="carousel" data-id="C10">
+<div class="slide">
+<div class="slide-label">1 / 4 — The Wall</div>
+<p>You build the monitoring. Then the monitoring breaks silently — a misconfigured environment, a hook installed mid-session that never fires — and every run since has looked clean precisely because the thing that would have complained was dead. Observability has failure modes of its own.</p>
+</div>
+<details class="more-cards">
+<summary>Show the other three cards — The Proof, The Requirement, The Fix Shape</summary>
+<div class="slide">
+<div class="slide-label">2 / 4 — The Proof</div>
+<p>An empty environment variable made my logging hook silently no-op. Hooks installed mid-session didn’t fire until restart: one district’s run captured <span class="stat">0 of 26</span> expected events and finished “successfully.” The report was right. The telemetry was fiction — and nothing knew.</p>
+</div>
+<div class="slide">
+<div class="slide-label">3 / 4 — The Requirement</div>
+<p class="req">An end-of-run assertion that the telemetry captured reality — and the checker shares code with the thing it checks, so the two can never drift apart.</p>
+</div>
+<div class="slide">
+<div class="slide-label">4 / 4 — The Fix Shape</div>
+<p>Reconstruct what <em>should</em> have been recorded from an independent source — the session transcript — and diff it against what was recorded; hard-fail on zero-capture. A detail I’m proud of: the gate <em>imports</em> the recorder’s own decision function instead of re-implementing it. The anti-drift lesson, applied to the anti-drift tool.</p>
+</div>
+</details>
+</div></div>
+<div class="mode">
+<div class="mode-head"><span class="mode-id">C11</span>
+<h3>The Deaf Loop</h3>
+</div>
+<p class="mode-hook">A stop condition keyed to a signal that never fires. The loop looks patient; it’s actually deaf.</p>
+<div class="carousel" data-id="C11">
+<div class="slide">
+<div class="slide-label">1 / 4 — The Wall</div>
+<p>A loop’s stop condition references a signal that will never fire. From the outside the loop looks patient, even diligent — it polls, it logs, it reports “nothing yet.” It is structurally incapable of finishing, and nothing about “nothing yet” looks broken.</p>
+</div>
+<details class="more-cards">
+<summary>Show the other three cards — The Proof, The Requirement, The Fix Shape</summary>
+<div class="slide">
+<div class="slide-label">2 / 4 — The Proof</div>
+<p>A monitoring loop I launched watched for a status its target never publishes on that channel. The loop was healthy and the telemetry was honest — it would have polled to its timeout reporting a clean “still waiting,” forever. I caught it because the silence itself eventually read as wrong.</p>
+</div>
+<div class="slide">
+<div class="slide-label">3 / 4 — The Requirement</div>
+<p class="req">A loop’s termination condition is itself a checked artifact: proven able to fire against a known-done state before the loop is trusted with anything.</p>
+</div>
+<div class="slide">
+<div class="slide-label">4 / 4 — The Fix Shape</div>
+<p>Test every stop condition once against a state where it must fire — the falsifiable-predicate discipline, applied to loops — and make timeout a fail-closed verdict that reports loudly, never a quiet exit. Its sibling is the Lying Recorder (C10), one axis over: C10 is a run whose record you can’t trust; this is a run that can’t hear it’s done.</p>
+</div>
+</details>
+</div></div>
+<div class="mode">
+<div class="mode-head"><span class="mode-id">C12</span>
+<h3>The Courier Tax</h3>
+</div>
+<p class="mode-hook">Paying a language model to be a for-loop.</p>
+<div class="carousel" data-id="C12">
+<div class="slide">
+<div class="slide-label">1 / 4 — The Wall</div>
+<p>Between every two deterministic steps — run a query, write a checkpoint, run the next query — the model is the courier: read prose, pick up the next command, execute, read more prose. The round-trip costs tokens and minutes, and it’s exactly where attention drifts and steps get skipped.</p>
+</div>
+<details class="more-cards">
+<summary>Show the other three cards — The Proof, The Requirement, The Fix Shape</summary>
+<div class="slide">
+<div class="slide-label">2 / 4 — The Proof</div>
+<p>When the system ran unattended, the steps it skipped were never the judgment calls — they were the boilerplate. Every run ends with the same four wrap-up commands. Each prose handoff was one more chance for attention to wander — exactly where the skips clustered. One 90-minute run wasted about <span class="stat">50 minutes</span> on work it had abbreviated and then had to redo.</p>
+</div>
+<div class="slide">
+<div class="slide-label">3 / 4 — The Requirement</div>
+<p class="req">Code drives sequencing. The model is invoked only where the next step requires judgment.</p>
+</div>
+<div class="slide">
+<div class="slide-label">4 / 4 — The Fix Shape</div>
+<p>A driver script picks the next step from state. It calls the model surgically — choosing the story angle, drafting narrative, talking to the operator — and runs helpers directly for everything else. Skipping becomes structurally impossible, and you stop paying inference prices for couriering.</p>
+</div>
+</details>
+</div></div>
+<div class="mode">
+<div class="mode-head"><span class="mode-id">C13</span>
+<h3>The Orchestration-Shape Tradeoff</h3>
+</div>
+<p class="mode-hook">Inline drifts. Full fan-out goes blind. The shape is a per-step decision.</p>
+<div class="carousel" data-id="C13">
+<div class="slide">
+<div class="slide-label">1 / 4 — The Wall</div>
+<p>Another face of drift: one long sequential context degrades as it grows. Fanning work out to subagents fixes that — isolated context, parallel speed. But a fully autonomous subagent is a <strong>black box</strong>: you lose insight into what it’s doing, and it cannot pause to ask a question. Whatever you gated on confirmation is now ungated inside the box.</p>
+</div>
+<details class="more-cards">
+<summary>Show the other three cards — The Proof, The Requirement, The Fix Shape</summary>
+<div class="slide">
+<div class="slide-label">2 / 4 — The Proof</div>
+<p>I run all three shapes in one system, deliberately. Heavy data phases fan out — context isolation and parallelism. Judgment moments and operator gates stay inline, where the orchestrator can see and ask. Choosing wrong in either direction cost me: sequential drift on long runs, and contained subagents that couldn’t surface the question they should have asked.</p>
+</div>
+<div class="slide">
+<div class="slide-label">3 / 4 — The Requirement</div>
+<p class="req">Orchestration shape is a first-class design decision trading accuracy × performance × control — chosen per step, never globally.</p>
+</div>
+<div class="slide">
+<div class="slide-label">4 / 4 — The Fix Shape</div>
+<p>Fan out for isolation and independent parallel work. Stay inline wherever a clarification gate or a human question lives. A driver mediates between the two. This is more than a telemetry choice — it decides what the system can notice and what it can ask.</p>
+</div>
+</details>
+</div></div>
+</div>
+</div>
+<div class="atlas-panel atlas-static" style="--panel-tint:#efedf6">
+<div class="family">
+<div class="family-rule"><span class="family-chip">Family D · #14–16 of 19</span>
+<h2>Memory</h2>
+</div>
+<div class="mode">
+<div class="mode-head"><span class="mode-id">D14</span>
+<h3>Context Dilution / The Monolith</h3>
+</div>
+<p class="mode-hook">Loading everything up front performs worse than loading nothing.</p>
+<div class="carousel" data-id="D14">
+<div class="slide">
+<div class="slide-label">1 / 4 — The Wall</div>
+<p>The intuition says: give the model all the context and it will use what it needs. The reality: attention spreads across everything you load, including the 90% that isn’t load-bearing for this request. Constraints stated early get buried under everything stated after.</p>
+</div>
+<details class="more-cards">
+<summary>Show the other three cards — The Proof, The Requirement, The Fix Shape</summary>
+<div class="slide">
+<div class="slide-label">2 / 4 — The Proof</div>
+<p>My first skill was a <span class="stat">600-line</span> monolithic file — every rule, every reference, loaded up front. By line 300 the agent had forgotten the constraints from line 50. It performed worse than having no skill at all.</p>
+</div>
+<div class="slide">
+<div class="slide-label">3 / 4 — The Requirement</div>
+<p class="req">Context loads progressively: start small, navigate to detail on demand, stop at the shallowest layer that answers the question.</p>
+</div>
+<div class="slide">
+<div class="slide-label">4 / 4 — The Fix Shape</div>
+<p>Layered structure — a small entry point with dispatch logic, phase files that load when their phase fires, references that load when pointed to. The budget you’re actually managing is attention, not tokens.</p>
+</div>
+</details>
+</div></div>
+<div class="mode">
+<div class="mode-head"><span class="mode-id">D15</span>
+<h3>The Compaction Cliff</h3>
+</div>
+<p class="mode-hook">Long sessions summarize themselves. Summaries round. Downstream builds on the rounding.</p>
+<div class="carousel" data-id="D15">
+<div class="slide">
+<div class="slide-label">1 / 4 — The Wall</div>
+<p>Long agent sessions compact: older turns get summarized to free up context. Summaries preserve gist and destroy precision — and any later step that reads the summary instead of the original builds on rounded values, with nothing flagging that it happened.</p>
+</div>
+<details class="more-cards">
+<summary>Show the other three cards — The Proof, The Requirement, The Fix Shape</summary>
+<div class="slide">
+<div class="slide-label">2 / 4 — The Proof</div>
+<p>Mid-run, phase 2 produced exact metrics — <code>paired_students: 247</code>. The conversation compacted between phases. Phase 3 read <em>“about 250 paired students”</em> from the summary and built the customer-facing artifacts on it. The report was off by single-digit percentages everywhere, for no visible reason.</p>
+</div>
+<div class="slide">
+<div class="slide-label">3 / 4 — The Requirement</div>
+<p class="req">Persist load-bearing facts to disk the moment they exist. Files survive compaction; conversation prose does not.</p>
+</div>
+<div class="slide">
+<div class="slide-label">4 / 4 — The Fix Shape</div>
+<p>A checkpoint file written at every phase end, in structured YAML, so a value like <code>paired_students: 247</code> is data, not a sentence a summarizer can soften into “about 250.” Narrative may be summarized; hard numbers are written to disk before they are ever presented. Downstream phases read the file, never the prior prose.</p>
+</div>
+</details>
+</div></div>
+<div class="mode">
+<div class="mode-head"><span class="mode-id">D16</span>
+<h3>The Re-Learned Lesson</h3>
+</div>
+<p class="mode-hook">A lesson you can’t find is a lesson you re-learn. Even the system you built to prevent this.</p>
+<div class="carousel" data-id="D16">
+<div class="slide">
+<div class="slide-label">1 / 4 — The Wall</div>
+<p>Corrections made in conversation evaporate when the session ends; the same mistake comes back next week. The bigger cousin: even the <em>meta-systems</em> you build get forgotten, if they don’t live somewhere that loads automatically.</p>
+</div>
+<details class="more-cards">
+<summary>Show the other three cards — The Proof, The Requirement, The Fix Shape</summary>
+<div class="slide">
+<div class="slide-label">2 / 4 — The Proof</div>
+<p>The same branch, path, and formatting mistakes recurred session after session until each became a written rule in a file the agent loads at startup. Then the sharper proof: I came back from my two-week honeymoon and couldn’t remember some of the finer details of how the “shared learnings &amp; rules” system <em>I had built four weeks earlier</em> worked — which file fed which reviewer, where a lesson was supposed to live.</p>
+</div>
+<div class="slide">
+<div class="slide-label">3 / 4 — The Requirement</div>
+<p class="req">Every correction becomes a rule in a known home that the right reader loads automatically — at write-time and at review-time.</p>
+</div>
+<div class="slide">
+<div class="slide-label">4 / 4 — The Fix Shape</div>
+<p>Route the lesson by who needs it: personal habits into per-user memory; repo standards into committed rule files mirrored into the AI reviewer’s config. One lesson, two readers — the writer never makes the mistake, and the reviewer catches it if it slips through anyway.</p>
+</div>
+</details>
+</div></div>
+</div>
+</div>
+<div class="atlas-panel atlas-static" style="--panel-tint:#f0f3e3">
+<div class="family">
+<div class="family-rule"><span class="family-chip">Family E · #17–19 of 19</span>
+<h2>Maturity</h2>
+</div>
+<div class="mode">
+<div class="mode-head"><span class="mode-id">E17</span>
+<h3>Single-Model Blindness</h3>
+</div>
+<p class="mode-hook">A second pass from the same model is polish, not verification.</p>
+<div class="carousel" data-id="E17">
+<div class="slide">
+<div class="slide-label">1 / 4 — The Wall</div>
+<p>Every model is structurally blind to certain classes of its own mistakes — the same priors that produced the bug are the ones reviewing it. Re-reading your own work with the same eyes finds typos, not blind spots.</p>
+</div>
+<details class="more-cards">
+<summary>Show the other three cards — The Proof, The Requirement, The Fix Shape</summary>
+<div class="slide">
+<div class="slide-label">2 / 4 — The Proof</div>
+<p>I shipped a redesign, self-reviewed the diff, and it looked clean. A different vendor’s model (Codex reviewing Opus’s work, in my case) then returned <span class="stat">9 findings — 7 were real bugs</span> that would have gone to production. The disagreement between models was the signal.</p>
+</div>
+<div class="slide">
+<div class="slide-label">3 / 4 — The Requirement</div>
+<p class="req">A second, different model reads every change before it ships — and you validate its findings against source, because it is confident when wrong, too.</p>
+</div>
+<div class="slide">
+<div class="slide-label">4 / 4 — The Fix Shape</div>
+<p>Cross-model review as a standing gate: one model writes, a different one reviews, a human adjudicates with the source open. Model <em>diversity</em> — different training, different priors — catches what repetition can’t.</p>
+</div>
+</details>
+</div></div>
+<div class="mode">
+<div class="mode-head"><span class="mode-id">E18</span>
+<h3>The Polite Fiction</h3>
+</div>
+<p class="mode-hook">A declared capability nothing verifies is a lie waiting to ship.</p>
+<div class="carousel" data-id="E18">
+<div class="slide">
+<div class="slide-label">1 / 4 — The Wall</div>
+<p>Systems accumulate declarations: “this component opts out of X,” “this skill adopts Y.” The moment a declaration isn’t machine-checked, it starts drifting from reality — copied forward, stale, comforting, false. The checkbox manufactures confidence in coverage that doesn’t exist.</p>
+</div>
+<details class="more-cards">
+<summary>Show the other three cards — The Proof, The Requirement, The Fix Shape</summary>
+<div class="slide">
+<div class="slide-label">2 / 4 — The Proof</div>
+<p>My skills share a library of capabilities — telemetry, shared Python helpers, reference data files. Each skill <em>declares</em> which capabilities it adopts and which it opts out of, with a justification, so one canonical implementation serves many skills and a linter can check each declaration against reality.</p>
+<p>The linter’s first version emitted an advisory note for every declared opt-out — <strong>which it never actually verified</strong>. Any skill could copy an opt-out clause from a neighbor, forget to update the wording, and pass forever. The fix made the check enforceable, with a test for exactly the copy-and-forget case.</p>
+</div>
+<div class="slide">
+<div class="slide-label">3 / 4 — The Requirement</div>
+<p class="req">Every declaration is machine-checked against reality. An unverified promise is treated as false.</p>
+</div>
+<div class="slide">
+<div class="slide-label">4 / 4 — The Fix Shape</div>
+<p>The dial-and-machine pattern: a declaration you write (the dial) is only meaningful when automatic machinery reads it and fails when it doesn’t match reality (the machine). A dial with no machine is decoration.</p>
+</div>
+</details>
+</div></div>
+<div class="mode">
+<div class="mode-head"><span class="mode-id">E19</span>
+<h3>The Dead Safety Net</h3>
+</div>
+<p class="mode-hook">A gate built ahead of need rots into theater — and its presence implies false coverage.</p>
+<div class="carousel" data-id="E19">
+<div class="slide">
+<div class="slide-label">1 / 4 — The Wall</div>
+<p>Not every entry in this catalog means “add machinery.” Gates built before a failure proves them tend to go unused — wired up, never firing, silently trusted. Dormant machinery is worse than absent machinery, because everyone assumes it’s watching.</p>
+</div>
+<details class="more-cards">
+<summary>Show the other three cards — The Proof, The Requirement, The Fix Shape</summary>
+<div class="slide">
+<div class="slide-label">2 / 4 — The Proof</div>
+<p>I built a baseline-drift mechanism to catch numbers shifting between runs. Across weeks of real runs: <span class="stat">one baseline ever committed, zero drift comparisons performed</span>. I deprecated it — and deleting it is what forced the better mechanism (binding results to live execution) to exist at all.</p>
+</div>
+<div class="slide">
+<div class="slide-label">3 / 4 — The Requirement</div>
+<p class="req">Build the gate when a failure proves it’s needed. Delete dormant machinery — its presence implies a coverage that isn’t there.</p>
+</div>
+<div class="slide">
+<div class="slide-label">4 / 4 — The Fix Shape</div>
+<p>Keep an explicit ledger: what’s automated, what’s still prose, what’s a promotion target. Promote on proven pain. Retire on proven disuse. The ledger of what you <em>haven’t</em> hardened is as load-bearing as the hardening.</p>
+</div>
+</details>
+</div></div>
+</div>
+</div>
+<div class="atlas-panel atlas-static" style="--panel-tint:#e8eef2">
+<div class="family">
+<div class="family-rule"><span class="family-chip">External catalogs</span>
+<h2>Appendix</h2>
+</div>
+<p class="family-intro">After writing this post, I got curious whether anyone else was cataloguing these failures, so I went looking. I had no prior familiarity with this research, but two maps stood out.</p>
+<div class="mode">
+<div class="mode-head"><span class="mode-id">F1</span>
+<h3>MAST — the academic map (UC Berkeley)</h3>
+</div>
+<p class="mode-hook">Fourteen multi-agent failure modes, derived from 1,600+ annotated execution traces. arXiv March 2025; published at NeurIPS, December 2025.</p>
+<div class="carousel" data-id="F1">
+<div class="slide">
+<div class="slide-label">1 / 4 — The Catalog</div>
+<p>MAST (the Multi-Agent System failure Taxonomy) is the closest academic cousin to this catalog: fourteen failure modes in three categories — system design, inter-agent misalignment, and task verification — derived from 1,600+ annotated execution traces across seven agent frameworks. Two findings travel well: agents violated requirements <em>despite</em> explicit prompts, and “the presence of a verifier is not a silver bullet.”</p>
+</div>
+<details class="more-cards">
+<summary>Show the other three cards — The Overlap, The Gaps, The Takeaway</summary>
+<div class="slide">
+<div class="slide-label">2 / 4 — The Overlap</div>
+<p>Ten of my nineteen map onto it. The drift family (A1–A2) is their “disobey task specification.” The Silent Skip (C9) is their “no or incomplete verification” — 8.2% of every failure they annotated. The Compaction Cliff (D15) is their “loss of conversation history.” Single-Model Blindness (E17) lives in their “incorrect verification.” And the Deaf Loop (C11) is their “unaware of termination conditions” — I hit it the week this post went up, and it earned its card the way the rest did: by failure. Their taxonomy came from reading traces; this one came from being burned by runs. We met in the middle.</p>
+</div>
+<div class="slide">
+<div class="slide-label">3 / 4 — The Gaps</div>
+<p>Four of their modes are missing here, and the reasons matter more than the count. Three — conversation reset, information withholding, ignored agent input — can only happen where agents talk to each other freely. My phases hand off through checkpoint files, never conversation, so there is no conversation to reset: those were engineered out before I knew their names. The fourth, step repetition, is bounded out — retries cap at one re-dispatch, and a completed phase leaves artifacts on disk, so a repeat announces itself.</p>
+</div>
+<div class="slide">
+<div class="slide-label">4 / 4 — The Takeaway</div>
+<p>Their largest failure category is system design — better architecture, not better prompting, is their prescription, and prompt-improvement interventions plateaued in their own experiments. That’s this post’s argument arrived at from the other side. And the working relationship between the two catalogs is the one PDR predicts: you don’t need the taxonomy in advance, because the failure names itself on a run. But it has a name — and checking your scars against the published map is how you find out which ones are structural.</p>
+</div>
+</details>
+</div></div>
+<div class="mode">
+<div class="mode-head"><span class="mode-id">F2</span>
+<h3>Microsoft’s red-team taxonomy — the adversarial map</h3>
+</div>
+<p class="mode-hook">Failure modes of agentic systems under attack, from the Microsoft AI Red Team. Whitepaper April 2025; updated June 4, 2026.</p>
+<div class="carousel" data-id="F2">
+<div class="slide">
+<div class="slide-label">1 / 4 — The Catalog</div>
+<p>Microsoft’s taxonomy charts what happens to agentic systems when someone is trying to break them: agent compromise, goal hijacking, supply-chain poisoning of tool descriptions, visual attacks on computer-use agents, MCP and plugin abuse, capability disclosure. The June 2026 update added seven categories that twelve months of red-teaming deployed systems made compelling — the map is days old as I add this tab, which in this field counts as current.</p>
+</div>
+<details class="more-cards">
+<summary>Show the other three cards — The Overlap, The Gaps, The Takeaway</summary>
+<div class="slide">
+<div class="slide-label">2 / 4 — The Overlap</div>
+<p>Almost nothing overlaps directly, because their map was written for a different lens — agents under attack rather than agents malfunctioning. But the twin pairs are striking. Their memory poisoning is my Re-Learned Lesson (D16) with a villain: they fear memory gaining lies; I fear it losing truth. Their inter-agent trust escalation — an orchestrator trusting a sub-agent’s self-asserted claims without verifying — is the Polite Fiction (E18) weaponized. Their session context contamination is Context Dilution (D14), seeded deliberately instead of self-inflicted.</p>
+</div>
+<div class="slide">
+<div class="slide-label">3 / 4 — The Gaps</div>
+<p>The gap is the threat model, and it is by design on both sides. Every mode on their map assumes an attacker, because charting hostile input is what a red team is for. Every mode on mine happened with no adversary anywhere, because I was building an internal reporting engine — the only thing that could hurt the system was the system itself. Both maps are real. They chart different oceans, and a production system sails on both.</p>
+</div>
+<div class="slide">
+<div class="slide-label">4 / 4 — The Takeaway</div>
+<p>Their June 2026 mitigations — context provenance tracking, structured separation of trusted from untrusted content, never trust a self-asserted claim — are this catalog’s fix shapes, rediscovered from the attack side. When the security people and the reliability people converge on the same architecture independently, that architecture is probably load-bearing.</p>
+</div>
+</details>
+</div></div>
+<p class="family-intro">A few of the modes above I haven’t found on either map — the evidence-surface fork (B5), the corrupting join (B6), the correct number that reads false (B7). Not because they’re exotic: Berkeley measures benchmarks, Microsoft measures attack surfaces, and this catalog measures output that has to be right in front of a paying customer. It isn’t the exhaustive map either. It’s the map of where I’ve actually been.</p>
+</div>
+</div></div>
+</div>
+
+<footer class="page-foot">
+Interactive companion to the essay
+<a href="https://moarbaji.medium.com/proof-driven-requirements-the-new-agile-for-building-ai-systems-84680268a270">"Proof-Driven Requirements: The New Agile for Building AI Systems"</a>.
+</footer>
+<script>
+(function(){
+const wpGhosts=(root)=>{for(const p of [...root.querySelectorAll("p")]){if(p.className)continue;const hasText=[...p.childNodes].some(n=>n.nodeType===3&&n.textContent.trim());if(hasText)continue;if(p.children.length){p.replaceWith(...p.childNodes)}else{p.remove()}}};
+const BEATS = ["The Wall", "The Proof", "The Requirement", "The Fix Shape"];
+const FAMILIES = [
+  { key: "A", name: "Drift" },
+  { key: "B", name: "Trust" },
+  { key: "C", name: "Orchestration" },
+  { key: "D", name: "Memory" },
+  { key: "E", name: "Maturity" },
+  { key: "F", name: "Appendix" },
+];
+const XLABELS = ["The Catalog", "The Overlap", "The Gaps", "The Takeaway"];
+const XINTRO = `</p>
+<p class="family-intro">After writing this post, I got curious whether anyone else was cataloguing these failures, so I went looking. I had no prior familiarity with this research, but two maps stood out.</p>
+<p>`;
+const XOUTRO = `</p>
+<p class="family-intro">A few of the modes above I haven’t found on either map — the evidence-surface fork (B5), the corrupting join (B6), the correct number that reads false (B7). Not because they’re exotic: Berkeley measures benchmarks, Microsoft measures attack surfaces, and this catalog measures output that has to be right in front of a paying customer. It isn’t the exhaustive map either. It’s the map of where I’ve actually been.</p>
+<p>`;
+const EXTRAS = [
+{ id:"F1", title:"MAST — the academic map (UC Berkeley)",
+  hook:"Fourteen multi-agent failure modes, derived from 1,600+ annotated execution traces. arXiv March 2025; published at NeurIPS, December 2025.",
+  labels: XLABELS,
+  beats:[
+    `</p>
+<p>MAST (the Multi-Agent System failure Taxonomy) is the closest academic cousin to this catalog: fourteen failure modes in three categories — system design, inter-agent misalignment, and task verification — derived from 1,600+ annotated execution traces across seven agent frameworks. Two findings travel well: agents violated requirements <em>despite</em> explicit prompts, and “the presence of a verifier is not a silver bullet.”</p>
+<p>`,
+    `</p>
+<p>Ten of my nineteen map onto it. The drift family (A1–A2) is their “disobey task specification.” The Silent Skip (C9) is their “no or incomplete verification” — 8.2% of every failure they annotated. The Compaction Cliff (D15) is their “loss of conversation history.” Single-Model Blindness (E17) lives in their “incorrect verification.” And the Deaf Loop (C11) is their “unaware of termination conditions” — I hit it the week this post went up, and it earned its card the way the rest did: by failure. Their taxonomy came from reading traces; this one came from being burned by runs. We met in the middle.</p>
+<p>`,
+    `</p>
+<p>Four of their modes are missing here, and the reasons matter more than the count. Three — conversation reset, information withholding, ignored agent input — can only happen where agents talk to each other freely. My phases hand off through checkpoint files, never conversation, so there is no conversation to reset: those were engineered out before I knew their names. The fourth, step repetition, is bounded out — retries cap at one re-dispatch, and a completed phase leaves artifacts on disk, so a repeat announces itself.</p>
+<p>`,
+    `</p>
+<p>Their largest failure category is system design — better architecture, not better prompting, is their prescription, and prompt-improvement interventions plateaued in their own experiments. That’s this post’s argument arrived at from the other side. And the working relationship between the two catalogs is the one PDR predicts: you don’t need the taxonomy in advance, because the failure names itself on a run. But it has a name — and checking your scars against the published map is how you find out which ones are structural.</p>
+<p>`,
+  ]},
+{ id:"F2", title:"Microsoft’s red-team taxonomy — the adversarial map",
+  hook:"Failure modes of agentic systems under attack, from the Microsoft AI Red Team. Whitepaper April 2025; updated June 4, 2026.",
+  labels: XLABELS,
+  beats:[
+    `</p>
+<p>Microsoft’s taxonomy charts what happens to agentic systems when someone is trying to break them: agent compromise, goal hijacking, supply-chain poisoning of tool descriptions, visual attacks on computer-use agents, MCP and plugin abuse, capability disclosure. The June 2026 update added seven categories that twelve months of red-teaming deployed systems made compelling — the map is days old as I add this tab, which in this field counts as current.</p>
+<p>`,
+    `</p>
+<p>Almost nothing overlaps directly, because their map was written for a different lens — agents under attack rather than agents malfunctioning. But the twin pairs are striking. Their memory poisoning is my Re-Learned Lesson (D16) with a villain: they fear memory gaining lies; I fear it losing truth. Their inter-agent trust escalation — an orchestrator trusting a sub-agent’s self-asserted claims without verifying — is the Polite Fiction (E18) weaponized. Their session context contamination is Context Dilution (D14), seeded deliberately instead of self-inflicted.</p>
+<p>`,
+    `</p>
+<p>The gap is the threat model, and it is by design on both sides. Every mode on their map assumes an attacker, because charting hostile input is what a red team is for. Every mode on mine happened with no adversary anywhere, because I was building an internal reporting engine — the only thing that could hurt the system was the system itself. Both maps are real. They chart different oceans, and a production system sails on both.</p>
+<p>`,
+    `</p>
+<p>Their June 2026 mitigations — context provenance tracking, structured separation of trusted from untrusted content, never trust a self-asserted claim — are this catalog’s fix shapes, rediscovered from the attack side. When the security people and the reliability people converge on the same architecture independently, that architecture is probably load-bearing.</p>
+<p>`,
+  ]},
+];
+const MODES = [
+{ id:"A1", fam:"A", title:"Semantic Drift under Ambiguity",
+  hook:"An instruction that sounds specific has several legitimate readings — and the model picks one silently.",
+  beats:[
+    `</p>
+<p>Most instructions you give an agent are ambiguous without you noticing. “Analyze this data for multiple years if this district has been with us for more than 1 year” sounds specific. It isn’t — there are several legitimate analyses that phrase could mean, and the model will pick one for you: silently, plausibly, and possibly a different one tomorrow. Nothing about the output looks broken, because every reading produces a clean-looking result.</p>
+<p>`,
+    `</p>
+<p>In my system, a multi-year analysis could legitimately mean at least three different things (tracking the same students' growth across years, comparing this year’s cohort against last year’s, or trending school-wide results over time). So I defined the three ways we do it and wrote selection rules based on the shape of the district’s data. That handles the ambiguity machines can settle.</p>
+<p>For the ambiguity they can’t: when a renewal-report request hits a district running our courses in multiple subjects, the system stops and asks me which subject I mean (or whether I want all of them) instead of guessing.</p>
+<p>`,
+    `</p>
+<p class="req">Ambiguity resolves through a defined menu of interpretations with selection rules — and when the rules can’t decide, the system asks the operator instead of guessing.</p>
+<p>`,
+    `</p>
+<p>Enumerate the legitimate interpretations before the model ever meets them. Encode the rules for choosing. Gate whatever remains on a human. The model generates <em>within</em> a chosen interpretation — it never chooses silently.</p>
+<p>`
+  ]},
+{ id:"A2", fam:"A", title:"Semantic Drift under Clarity",
+  hook:"The companion nobody warns you about: a perfectly clear spec still drifts on a long run.",
+  beats:[
+    `</p>
+<p>Drift under ambiguity at least has a cause you can fix with clearer instructions. The nastier discovery: a completely unambiguous spec <em>also</em> drifts on a long run. The model shortcuts, conflates adjacent steps, re-derives a format from memory instead of re-reading the doc two files away. <strong>Length and repetition are the enemy, not vagueness.</strong></p>
+<p>`,
+    `</p>
+<p>I audited one end-to-end run of my report skill: <span class="stat">164 structured events emitted, six distinct drift modes</span> — with three correct reference docs sitting in the working directory the whole time. Separately, a 1,000-line skill spec that ran clean when I supervised it interactively started <strong>silently skipping steps</strong> the moment it ran as a background agent. Same spec. Same code. Same data.</p>
+<p>`,
+    `</p>
+<p class="req">Anything deterministic must be code, not prose the model re-interprets on every pass. The longer the run, the more this matters.</p>
+<p>`,
+    `</p>
+<p>A validating helper the model <em>calls with arguments</em> — it never writes the fixed shape itself. The clearer your prose, the more tempting it is to trust it. Don’t. Better prose isn’t the answer; <strong>not-prose</strong> is.</p>
+<p>`
+  ]},
+{ id:"A3", fam:"A", title:"Schema Improvisation",
+  hook:"Asked for a fixed shape, the model invents a slightly better one.",
+  beats:[
+    `</p>
+<p>Hand the model a strict schema and it improvises: promotes a subtype into the type field because it’s “more specific,” adds helper fields that seem useful, writes the file one directory up from where it belongs. Each deviation is locally reasonable. Every one breaks the downstream tools that parse the output.</p>
+<p>`,
+    `</p>
+<p>In that same 164-event audit: the subtype <code>sql_query</code> was promoted into the <code>type:</code> field on <span class="stat">39 of 164 events</span>; an invented <code>entry: START/END</code> field appeared on 34; nine invented subtypes fell outside the canonical enum; the journal landed in the wrong directory.</p>
+<p>`,
+    `</p>
+<p class="req">The producer of a fixed shape validates structure and rejects unknowns. The model passes data — never format.</p>
+<p>`,
+    `</p>
+<p>A small CLI owns the schema: it allocates IDs, stamps timestamps, hardcodes the path, validates every enum, rejects invented fields. Five of my six drift modes disappeared <em>by construction</em> — the model can’t drift a file it no longer writes.</p>
+<p>`
+  ]},
+{ id:"B1", fam:"B", title:"The Confident Fabrication",
+  hook:"A number nobody computed, stated fluently.",
+  beats:[
+    `</p>
+<p>The model states a metric that doesn’t match any query that ran — or types an “expected result” from its prior of what the data probably says. The sentence is grammatical, specific, and wrong. In a customer-facing report, a fabricated number is worse than no number.</p>
+<p>`,
+    `</p>
+<p>While registering a new SQL query with verified logic, the model hand-typed the expected result of that query instead of running it. The typed value was <span class="stat">530x off</span> from what the warehouse actually returned.</p>
+<p>This one incident put a hard gate on expectation strings (e.g. “this query should return X”): computed, never authored.</p>
+<p>`,
+    `</p>
+<p class="req">No value reaches output unless execution produced it during this run. Result strings bind to the query that made them — never to memory.</p>
+<p>`,
+    `</p>
+<p>Separate compute from narrate. Registering a metric forces the query to execute at registration time, so the recorded expectation is real by construction. The narrator may <em>reference</em> computed values by name; it can never mint one.</p>
+<p>`
+  ]},
+{ id:"B2", fam:"B", title:"Evidence Surface Inconsistency",
+  hook:"The story and the evidence beside it disagree — or no one can see whether they agree.",
+  beats:[
+    `</p>
+<p>A report has two surfaces: the narrative a human reads aloud, and the charts and tables beside it. If they’re built from different read paths they quietly diverge. My early reports retyped numbers into sentences, and a retyped number is a fork: the prose and the chart beside it can drift apart with no error anywhere.</p>
+<p>And there’s a deeper version: even when the two surfaces <em>do</em> agree, can a reviewer tell which sentences are anchored to data and which are authored prose?</p>
+<p>`,
+    `</p>
+<p>The fix: narrative templates carry tokens instead of numbers. A sentence is authored as <em>“{funnel_enrolled} students enrolled in ChalkTalk,”</em> where {funnel_enrolled} names a registered SQL query or Python calculation. At render time it becomes <em>“12,651 students enrolled in ChalkTalk.”</em></p>
+<p>Interpolated values render visibly distinct from authored prose — a reviewer sees at a glance which words are data, and can click a number to land on the query that produced it.</p>
+<p>`,
+    `</p>
+<p class="req">Every claim traces to a recorded event — and the trace is inspectable. Data-bound text and authored prose must be distinguishable at a glance.</p>
+<p>`,
+    `</p>
+<p>One read model for narrative and evidence: numbers live as tokens bound at render time, never retyped. A claims file with source and reasoning per claim; a halt when a narrative number matches no recorded event. Provenance that exists but can’t be read is provenance that doesn’t exist.</p>
+<p>`
+  ]},
+{ id:"B3", fam:"B", title:"The Sum That Doesn’t Add Up",
+  hook:"Individually correct queries combine into nonsense. The join is where correctness dies.",
+  beats:[
+    `</p>
+<p>Every input query is verified. The final numbers get fact-checked. The result is still wrong — because the corruption happened <em>in the middle</em>: a join fans out and silently inflates counts, an aggregation breaks across grade levels, a filter leaks rows from outside the year you declared. Nobody checks the middle, because each piece passed its own test.</p>
+<p>`,
+    `</p>
+<p>I built a whole validation layer because of this zone. The checks: <strong>grain</strong> (each row unique on declared columns, catching fan-out), <strong>rollup</strong> (recomputing the same number from its finest-grained rows gives the same total — one query checked against its own math), <strong>scope</strong> (no rows from outside the declared district, curriculum, and year), <strong>source-consistency</strong> (the declared table matches what the SQL actually joins), and <strong>reconciliation</strong> (separate outputs checked against each other — the counts published in one section must sum to the headline in another, and independent sources must agree within tolerance).</p>
+<p>`,
+    `</p>
+<p class="req">Declare invariants on the output shape — uniqueness, parts-equal-whole, no leakage — and mechanically verify them at every step. Verify the middle, not just the ends.</p>
+<p>`,
+    `</p>
+<p>The invariant rides as a declaration on the data model itself and is checked per-query at runtime. Severity is a product decision per constraint: fan-out and broken rollups <strong>halt</strong>; a possible scope leak <strong>proceeds but gets flagged</strong> where the human and the narrator both see it.</p>
+<p>`
+  ]},
+{ id:"B4", fam:"B", title:"The Correct Number, Wrong Reading",
+  hook:"The data is right. The sentence makes the reader compute something false.",
+  beats:[
+    `</p>
+<p>The subtlest trust failure I’ve hit: every value in the sentence is accurate, and the sentence still lies — because of how the values sit next to each other. The output of a report isn’t the number; it’s the meaning the reader walks away with.</p>
+<p>`,
+    `</p>
+<p>A report cover read: “reaching <span class="stat">334 of 440</span> enrolled students and a path to <strong>doubling</strong> the paired-evidence base.” Every number was right — the doubling meant 109 going to roughly 220. But put “doubling” next to “334 of 440” and the reader’s eye computes an impossible 668. Correct data, false reading.</p>
+<p>`,
+    `</p>
+<p class="req">Check how a number will be read, not only whether it is right. A multiplier must bind explicitly to its base.</p>
+<p>`,
+    `</p>
+<p>A render-time check for perception traps — mine detects a multiplier landing near an unrelated base and halts unless the sentence carries its own binding: “doubling (from 109 to ~220).” Data-correctness gates can’t catch this class. It needs its own gate.</p>
+<p>`
+  ]},
+{ id:"C5", fam:"C", title:"The Hidden Failure Cascade",
+  hook:"No layer proved correctness — and the deeper the orchestration, the harder to localize.",
+  beats:[
+    `</p>
+<p>One phase retrieves weak data. The next synthesizes on top of it. A third acts on the flawed synthesis. The final output sounds coherent and intelligent — because the last model in the chain is very good at sounding coherent. No layer actually proved anything, and the more sophisticated the orchestration, the more places the break can hide.</p>
+<p>`,
+    `</p>
+<p>My version: phase 2's exact numbers reaching phase 3 as lossy conversational summary, then a hollow phase poisoning everything downstream while the final report read beautifully. Until each phase boundary became a checkable artifact, localizing a cascade meant re-reading a 90-minute transcript by hand.</p>
+<p>`,
+    `</p>
+<p class="req">Deep orchestration must decompose into phases that each prove their own correctness — or a coherent-sounding whole hides a broken part you cannot find.</p>
+<p>`,
+    `</p>
+<p>Checkpoints between phases — downstream reads the file, never the prior prose. Per-phase execution counts. Reconciliation at phase boundaries, so a dead layer surfaces after phase 1 instead of after the run. Orchestration depth raises the stakes of per-phase proof; it never lowers them.</p>
+<p>`
+  ]},
+{ id:"C2", fam:"C", title:"The Silent Skip / Phase Hollowing",
+  hook:"A step quietly dropped — output still looks complete. Success by appearance.",
+  beats:[
+    `</p>
+<p>A multi-step agent drops a step — or collapses a whole dispatch-subagents architecture into one inline pass — and still emits deliverables that look finished. From the outside: success. Underneath: hollow. This failure does not announce itself, ever.</p>
+<p>`,
+    `</p>
+<p>One run executed every phase <strong>inline</strong> instead of dispatching them: substantive-looking deliverables, <span class="stat">zero telemetry</span>, and about 115 false alarms from confused downstream checks. An earlier run had silently dropped an entire analysis phase and two customer PDFs — nothing checked for them, so nothing noticed. The hardening that followed cut detection from <span class="stat">~90 minutes to ~30 seconds</span>.</p>
+<p>`,
+    `</p>
+<p class="req">Every mandated step proves it ran. A step that cannot show execution evidence halts the run. Zero evidence is a failure — never a clean run.</p>
+<p>`,
+    `</p>
+<p>A completion contract (a machine-readable list of what each phase must produce) plus per-phase execution counts means a hollow phase halts before the next one builds on it. The elegant endgame: the retry path <em>re-dispatches</em> the phase, and a dispatched subagent physically cannot run inline — the architecture cures its own failure mode.</p>
+<p>`
+  ]},
+{ id:"C3", fam:"C", title:"The Lying Recorder",
+  hook:"The telemetry itself silently fails. The run looks clean because nothing was watching.",
+  beats:[
+    `</p>
+<p>You build the monitoring. Then the monitoring breaks silently — a misconfigured environment, a hook installed mid-session that never fires — and every run since has looked clean precisely because the thing that would have complained was dead. Observability has failure modes of its own.</p>
+<p>`,
+    `</p>
+<p>An empty environment variable made my logging hook silently no-op. Hooks installed mid-session didn’t fire until restart: one district’s run captured <span class="stat">0 of 26</span> expected events and finished “successfully.” The report was right. The telemetry was fiction — and nothing knew.</p>
+<p>`,
+    `</p>
+<p class="req">An end-of-run assertion that the telemetry captured reality — and the checker shares code with the thing it checks, so the two can never drift apart.</p>
+<p>`,
+    `</p>
+<p>Reconstruct what <em>should</em> have been recorded from an independent source — the session transcript — and diff it against what was recorded; hard-fail on zero-capture. A detail I’m proud of: the gate <em>imports</em> the recorder’s own decision function instead of re-implementing it. The anti-drift lesson, applied to the anti-drift tool.</p>
+<p>`
+  ]},
+{ id:"C7", fam:"C", title:"The Deaf Loop",
+  hook:"A stop condition keyed to a signal that never fires. The loop looks patient; it’s actually deaf.",
+  beats:[
+    `</p>
+<p>A loop’s stop condition references a signal that will never fire. From the outside the loop looks patient, even diligent — it polls, it logs, it reports “nothing yet.” It is structurally incapable of finishing, and nothing about “nothing yet” looks broken.</p>
+<p>`,
+    `</p>
+<p>A monitoring loop I launched watched for a status its target never publishes on that channel. The loop was healthy and the telemetry was honest — it would have polled to its timeout reporting a clean “still waiting,” forever. I caught it because the silence itself eventually read as wrong.</p>
+<p>`,
+    `</p>
+<p class="req">A loop’s termination condition is itself a checked artifact: proven able to fire against a known-done state before the loop is trusted with anything.</p>
+<p>`,
+    `</p>
+<p>Test every stop condition once against a state where it must fire — the falsifiable-predicate discipline, applied to loops — and make timeout a fail-closed verdict that reports loudly, never a quiet exit. Its sibling is the Lying Recorder (C10), one axis over: C10 is a run whose record you can’t trust; this is a run that can’t hear it’s done.</p>
+<p>`,
+  ]},
+{ id:"C4", fam:"C", title:"The Courier Tax",
+  hook:"Paying a language model to be a for-loop.",
+  beats:[
+    `</p>
+<p>Between every two deterministic steps — run a query, write a checkpoint, run the next query — the model is the courier: read prose, pick up the next command, execute, read more prose. The round-trip costs tokens and minutes, and it’s exactly where attention drifts and steps get skipped.</p>
+<p>`,
+    `</p>
+<p>When the system ran unattended, the steps it skipped were never the judgment calls — they were the boilerplate. Every run ends with the same four wrap-up commands. Each prose handoff was one more chance for attention to wander — exactly where the skips clustered. One 90-minute run wasted about <span class="stat">50 minutes</span> on work it had abbreviated and then had to redo.</p>
+<p>`,
+    `</p>
+<p class="req">Code drives sequencing. The model is invoked only where the next step requires judgment.</p>
+<p>`,
+    `</p>
+<p>A driver script picks the next step from state. It calls the model surgically — choosing the story angle, drafting narrative, talking to the operator — and runs helpers directly for everything else. Skipping becomes structurally impossible, and you stop paying inference prices for couriering.</p>
+<p>`
+  ]},
+{ id:"C6", fam:"C", title:"The Orchestration-Shape Tradeoff",
+  hook:"Inline drifts. Full fan-out goes blind. The shape is a per-step decision.",
+  beats:[
+    `</p>
+<p>Another face of drift: one long sequential context degrades as it grows. Fanning work out to subagents fixes that — isolated context, parallel speed. But a fully autonomous subagent is a <strong>black box</strong>: you lose insight into what it’s doing, and it cannot pause to ask a question. Whatever you gated on confirmation is now ungated inside the box.</p>
+<p>`,
+    `</p>
+<p>I run all three shapes in one system, deliberately. Heavy data phases fan out — context isolation and parallelism. Judgment moments and operator gates stay inline, where the orchestrator can see and ask. Choosing wrong in either direction cost me: sequential drift on long runs, and contained subagents that couldn’t surface the question they should have asked.</p>
+<p>`,
+    `</p>
+<p class="req">Orchestration shape is a first-class design decision trading accuracy × performance × control — chosen per step, never globally.</p>
+<p>`,
+    `</p>
+<p>Fan out for isolation and independent parallel work. Stay inline wherever a clarification gate or a human question lives. A driver mediates between the two. This is more than a telemetry choice — it decides what the system can notice and what it can ask.</p>
+<p>`
+  ]},
+{ id:"D1", fam:"D", title:"Context Dilution / The Monolith",
+  hook:"Loading everything up front performs worse than loading nothing.",
+  beats:[
+    `</p>
+<p>The intuition says: give the model all the context and it will use what it needs. The reality: attention spreads across everything you load, including the 90% that isn’t load-bearing for this request. Constraints stated early get buried under everything stated after.</p>
+<p>`,
+    `</p>
+<p>My first skill was a <span class="stat">600-line</span> monolithic file — every rule, every reference, loaded up front. By line 300 the agent had forgotten the constraints from line 50. It performed worse than having no skill at all.</p>
+<p>`,
+    `</p>
+<p class="req">Context loads progressively: start small, navigate to detail on demand, stop at the shallowest layer that answers the question.</p>
+<p>`,
+    `</p>
+<p>Layered structure — a small entry point with dispatch logic, phase files that load when their phase fires, references that load when pointed to. The budget you’re actually managing is attention, not tokens.</p>
+<p>`
+  ]},
+{ id:"D2", fam:"D", title:"The Compaction Cliff",
+  hook:"Long sessions summarize themselves. Summaries round. Downstream builds on the rounding.",
+  beats:[
+    `</p>
+<p>Long agent sessions compact: older turns get summarized to free up context. Summaries preserve gist and destroy precision — and any later step that reads the summary instead of the original builds on rounded values, with nothing flagging that it happened.</p>
+<p>`,
+    `</p>
+<p>Mid-run, phase 2 produced exact metrics — <code>paired_students: 247</code>. The conversation compacted between phases. Phase 3 read <em>“about 250 paired students”</em> from the summary and built the customer-facing artifacts on it. The report was off by single-digit percentages everywhere, for no visible reason.</p>
+<p>`,
+    `</p>
+<p class="req">Persist load-bearing facts to disk the moment they exist. Files survive compaction; conversation prose does not.</p>
+<p>`,
+    `</p>
+<p>A checkpoint file written at every phase end, in structured YAML, so a value like <code>paired_students: 247</code> is data, not a sentence a summarizer can soften into “about 250.” Narrative may be summarized; hard numbers are written to disk before they are ever presented. Downstream phases read the file, never the prior prose.</p>
+<p>`
+  ]},
+{ id:"D3", fam:"D", title:"The Re-Learned Lesson",
+  hook:"A lesson you can’t find is a lesson you re-learn. Even the system you built to prevent this.",
+  beats:[
+    `</p>
+<p>Corrections made in conversation evaporate when the session ends; the same mistake comes back next week. The bigger cousin: even the <em>meta-systems</em> you build get forgotten, if they don’t live somewhere that loads automatically.</p>
+<p>`,
+    `</p>
+<p>The same branch, path, and formatting mistakes recurred session after session until each became a written rule in a file the agent loads at startup. Then the sharper proof: I came back from my two-week honeymoon and couldn’t remember some of the finer details of how the “shared learnings &amp; rules” system <em>I had built four weeks earlier</em> worked — which file fed which reviewer, where a lesson was supposed to live.</p>
+<p>`,
+    `</p>
+<p class="req">Every correction becomes a rule in a known home that the right reader loads automatically — at write-time and at review-time.</p>
+<p>`,
+    `</p>
+<p>Route the lesson by who needs it: personal habits into per-user memory; repo standards into committed rule files mirrored into the AI reviewer’s config. One lesson, two readers — the writer never makes the mistake, and the reviewer catches it if it slips through anyway.</p>
+<p>`
+  ]},
+{ id:"E1", fam:"E", title:"Single-Model Blindness",
+  hook:"A second pass from the same model is polish, not verification.",
+  beats:[
+    `</p>
+<p>Every model is structurally blind to certain classes of its own mistakes — the same priors that produced the bug are the ones reviewing it. Re-reading your own work with the same eyes finds typos, not blind spots.</p>
+<p>`,
+    `</p>
+<p>I shipped a redesign, self-reviewed the diff, and it looked clean. A different vendor’s model (Codex reviewing Opus’s work, in my case) then returned <span class="stat">9 findings — 7 were real bugs</span> that would have gone to production. The disagreement between models was the signal.</p>
+<p>`,
+    `</p>
+<p class="req">A second, different model reads every change before it ships — and you validate its findings against source, because it is confident when wrong, too.</p>
+<p>`,
+    `</p>
+<p>Cross-model review as a standing gate: one model writes, a different one reviews, a human adjudicates with the source open. Model <em>diversity</em> — different training, different priors — catches what repetition can’t.</p>
+<p>`
+  ]},
+{ id:"E2", fam:"E", title:"The Polite Fiction",
+  hook:"A declared capability nothing verifies is a lie waiting to ship.",
+  beats:[
+    `</p>
+<p>Systems accumulate declarations: “this component opts out of X,” “this skill adopts Y.” The moment a declaration isn’t machine-checked, it starts drifting from reality — copied forward, stale, comforting, false. The checkbox manufactures confidence in coverage that doesn’t exist.</p>
+<p>`,
+    `</p>
+<p>My skills share a library of capabilities — telemetry, shared Python helpers, reference data files. Each skill <em>declares</em> which capabilities it adopts and which it opts out of, with a justification, so one canonical implementation serves many skills and a linter can check each declaration against reality.</p>
+<p>The linter’s first version emitted an advisory note for every declared opt-out — <strong>which it never actually verified</strong>. Any skill could copy an opt-out clause from a neighbor, forget to update the wording, and pass forever. The fix made the check enforceable, with a test for exactly the copy-and-forget case.</p>
+<p>`,
+    `</p>
+<p class="req">Every declaration is machine-checked against reality. An unverified promise is treated as false.</p>
+<p>`,
+    `</p>
+<p>The dial-and-machine pattern: a declaration you write (the dial) is only meaningful when automatic machinery reads it and fails when it doesn’t match reality (the machine). A dial with no machine is decoration.</p>
+<p>`
+  ]},
+{ id:"E3", fam:"E", title:"The Dead Safety Net",
+  hook:"A gate built ahead of need rots into theater — and its presence implies false coverage.",
+  beats:[
+    `</p>
+<p>Not every entry in this catalog means “add machinery.” Gates built before a failure proves them tend to go unused — wired up, never firing, silently trusted. Dormant machinery is worse than absent machinery, because everyone assumes it’s watching.</p>
+<p>`,
+    `</p>
+<p>I built a baseline-drift mechanism to catch numbers shifting between runs. Across weeks of real runs: <span class="stat">one baseline ever committed, zero drift comparisons performed</span>. I deprecated it — and deleting it is what forced the better mechanism (binding results to live execution) to exist at all.</p>
+<p>`,
+    `</p>
+<p class="req">Build the gate when a failure proves it’s needed. Delete dormant machinery — its presence implies a coverage that isn’t there.</p>
+<p>`,
+    `</p>
+<p>Keep an explicit ledger: what’s automated, what’s still prose, what’s a promotion target. Promote on proven pain. Retire on proven disuse. The ledger of what you <em>haven’t</em> hardened is as load-bearing as the hardening.</p>
+<p>`
+  ]},
+];
+/* ---------- render: one family at a time, filing-cabinet tabs ---------- */
+const TINTS = { A:"#f8ece2", B:"#f9f1dd", C:"#e9f2ec", D:"#efedf6", E:"#f0f3e3", F:"#e8eef2" };
+const atlas = document.getElementById("atlas");
+atlas.innerHTML = `</p>
+<div class="atlas-shell">
+<div class="atlas-tabwrap">
+<div class="atlas-tabs" role="tablist" aria-label="Failure mode families"></div>
+<div class="tab-more" aria-hidden="true">›</div>
+</p></div>
+<div class="atlas-panel" role="tabpanel"></div>
+</p></div>
+<p>`;
+const shell = atlas.querySelector(".atlas-shell");
+const tabwrap = atlas.querySelector(".atlas-tabwrap");
+const tabbar = atlas.querySelector(".atlas-tabs");
+const panel = atlas.querySelector(".atlas-panel");
+function syncTabMore() {
+  const more = tabbar.scrollLeft + tabbar.clientWidth < tabbar.scrollWidth - 4;
+  tabwrap.classList.toggle("more", more);
+}
+tabbar.addEventListener("scroll", syncTabMore);
+window.addEventListener("resize", syncTabMore);
+for (const fam of FAMILIES) {
+  const t = document.createElement("button");
+  t.className = "ftab";
+  t.setAttribute("role", "tab");
+  t.dataset.key = fam.key;
+  t.innerHTML = `<span class="ftab-letter">${fam.key}</span>${fam.name}`;
+  t.addEventListener("click", () => showFamily(fam.key, true));
+  tabbar.appendChild(t);
+}
+function showFamily(key, scroll) {
+  const fam = FAMILIES.find(f => f.key === key);
+  const tint = TINTS[key];
+  atlas.querySelector(".atlas-shell").style.setProperty("--panel-tint", tint);
+  for (const t of tabbar.querySelectorAll(".ftab")) {
+    const on = t.dataset.key === key;
+    t.classList.toggle("on", on);
+    t.setAttribute("aria-selected", on ? "true" : "false");
+  }
+  const numbered = MODES.map((m, i) => ({ ...m, gid: m.fam + (i + 1), num: i + 1 }));
+  const items = key === "F" ? EXTRAS.map((m, i) => ({ ...m, gid: "F" + (i + 1), num: i + 1 })) : numbered.filter(m => m.fam === key);
+  const range = items.length === 1 ? `#${items[0].num}` : `#${items[0].num}\u2013${items[items.length - 1].num}`;
+  const chip = key === "F" ? "External catalogs" : `Family ${fam.key} · ${range} of ${numbered.length}`;
+  const intro = key === "F" ? XINTRO : "";
+  const outro = key === "F" ? XOUTRO : "";
+  panel.innerHTML = `</p>
+<div class="family">
+<div class="family-rule"><span class="family-chip">${chip}</span></p>
+<h2>${fam.name}</h2>
+</div>
+<p>${intro}
+      ${items.map(m => `</p>
+<div class="mode">
+<div class="mode-head"><span class="mode-id">${m.gid}</span></p>
+<h3>${m.title}</h3>
+</div>
+<p class="mode-hook">${m.hook}</p>
+<div class="carousel" data-id="${m.gid}">
+<div class="track" tabindex="0" aria-label="${m.title} — step through with arrow buttons">
+              ${m.beats.map((b, i) => `</p>
+<div class="slide">
+<div class="slide-label">${i + 1} / ${m.beats.length} — ${(m.labels || BEATS)[i]}</div>
+<p>                  ${b}
+                </p></div>
+<p>`).join("")}
+            </p></div>
+<div class="carousel-nav">
+              <button class="cnav-btn prev" aria-label="Previous card">← Prev</button></p>
+<div class="dots">${m.beats.map((_, i) => `<span class="dot ${i === 0 ? "on" : ""}"></span>`).join("")}</div>
+<p>              <button class="cnav-btn next" aria-label="Next card">Next →</button>
+            </div>
+</p></div>
+</p></div>
+<p>`).join("")}${outro}
+    </p></div>
+<p>`;
+  wpGhosts(panel);
+  initCarousels(panel);
+  syncTabMore();
+  if (scroll) {
+    const top = shell.getBoundingClientRect().top + window.pageYOffset - 6;
+    window.scrollTo({ top, behavior: "smooth" });
+  }
+}
+/* ---------- carousel behavior ---------- */
+function initCarousels(root) {
+  for (const car of root.querySelectorAll(".carousel")) {
+    const track = car.querySelector(".track");
+    const prev = car.querySelector(".prev");
+    const next = car.querySelector(".next");
+    const dots = [...car.querySelectorAll(".dot")];
+    const idx = () => Math.round(track.scrollLeft / track.offsetWidth);
+    const go = (i) => track.scrollTo({ left: i * track.offsetWidth, behavior: "smooth" });
+    const sync = () => {
+      const i = idx();
+      dots.forEach((d, j) => d.classList.toggle("on", j === i));
+      prev.disabled = i === 0;
+      next.disabled = i === dots.length - 1;
+    };
+    prev.addEventListener("click", () => go(idx() - 1));
+    next.addEventListener("click", () => go(idx() + 1));
+    let raf;
+    track.addEventListener("scroll", () => { cancelAnimationFrame(raf); raf = requestAnimationFrame(sync); });
+    track.addEventListener("keydown", (e) => {
+      if (e.key === "ArrowRight") { e.preventDefault(); go(idx() + 1); }
+      if (e.key === "ArrowLeft") { e.preventDefault(); go(idx() - 1); }
+    });
+    sync();
+  }
+}
+wpGhosts(document.querySelector(".ptr-scope"));
+showFamily("A", false);
+})();
+
+</script>
+</body></html>
