@@ -292,7 +292,7 @@ ${sl.slice(1).map(x=>x.outerHTML).join("")}</details>
 <div class="slide">
 <div class="slide-label">2 / 4 — The Proof</div>
 <p>In my system, a multi-year analysis could legitimately mean at least three different things (tracking the same students’ growth across years, comparing this year’s cohort against last year’s, or trending school-wide results over time). So I defined the three ways we do it and wrote selection rules based on the shape of the district’s data. That handles the ambiguity machines can settle.</p>
-<p>For the ambiguity they can’t: when a renewal-report request hits a district running our courses in multiple subjects, the system stops and asks me which subject I mean (or whether I want all of them) instead of guessing.</p>
+<p>For the ambiguity they can’t: when someone asks the system to build a district’s renewal report and that district runs our courses in several subjects (e.g. English and math), the system stops and asks me which subject I wanted instead of guessing.</p>
 </div>
 <div class="slide">
 <div class="slide-label">3 / 4 — The Requirement</div>
@@ -318,7 +318,7 @@ ${sl.slice(1).map(x=>x.outerHTML).join("")}</details>
 <summary>Show the other three cards — The Proof, The Requirement, The Fix Shape</summary>
 <div class="slide">
 <div class="slide-label">2 / 4 — The Proof</div>
-<p>I audited one end-to-end run of my report skill: <span class="stat">164 structured events emitted, six distinct drift modes</span> — with three correct reference docs sitting in the working directory the whole time. Separately, a 1,000-line skill spec that ran clean when I supervised it interactively started <strong>silently skipping steps</strong> the moment it ran as a background agent. Same spec. Same code. Same data.</p>
+<p>I audited one full, end-to-end run of my report-building engine. Across the run’s <span class="stat">164 logged events</span>, the output drifted from the spec in <span class="stat">six distinct ways</span> — even though the three reference documents that define the correct behavior sat in the working directory the entire time, available to read. Separately, a 1,000-line skill spec that ran clean when I supervised it interactively started <strong>silently skipping steps</strong> the moment it ran as a background agent. Same spec. Same code. Same data.</p>
 </div>
 <div class="slide">
 <div class="slide-label">3 / 4 — The Requirement</div>
@@ -344,7 +344,7 @@ ${sl.slice(1).map(x=>x.outerHTML).join("")}</details>
 <summary>Show the other three cards — The Proof, The Requirement, The Fix Shape</summary>
 <div class="slide">
 <div class="slide-label">2 / 4 — The Proof</div>
-<p>In that same 164-event audit: the subtype <code>sql_query</code> was promoted into the <code>type:</code> field on <span class="stat">39 of 164 events</span>; an invented <code>entry: START/END</code> field appeared on 34; nine invented subtypes fell outside the canonical enum; the journal landed in the wrong directory.</p>
+<p>In that same 164-event audit: <code>sql_query</code> is a valid <code>subtype:</code> in my schema, but on <span class="stat">39 of 164 events</span> the model wrote it into the <code>type:</code> field instead, which is the parent field of <code>subtype:</code> and the wrong one to use here; an invented <code>entry: START/END</code> field appeared on 34; nine invented subtypes fell outside the schema’s allowed set of values; and the log file itself was written to the wrong directory.</p>
 </div>
 <div class="slide">
 <div class="slide-label">3 / 4 — The Requirement</div>
@@ -371,7 +371,7 @@ ${sl.slice(1).map(x=>x.outerHTML).join("")}</details>
 <div class="carousel" data-id="B4">
 <div class="slide">
 <div class="slide-label">1 / 4 — The Wall</div>
-<p>The model states a metric that doesn’t match any query that ran — or types an “expected result” from its prior of what the data probably says. The sentence is grammatical, specific, and wrong. In a customer-facing report, a fabricated number is worse than no number.</p>
+<p>The model states a metric that doesn’t match any query that ran — or it types in an “expected result” based on its own hunch of what the data probably says. The sentence is grammatical, specific, and wrong. In a customer-facing report, a fabricated number is worse than no number.</p>
 </div>
 <details class="more-cards">
 <summary>Show the other three cards — The Proof, The Requirement, The Fix Shape</summary>
@@ -458,7 +458,7 @@ ${sl.slice(1).map(x=>x.outerHTML).join("")}</details>
 <summary>Show the other three cards — The Proof, The Requirement, The Fix Shape</summary>
 <div class="slide">
 <div class="slide-label">2 / 4 — The Proof</div>
-<p>A report cover read: “reaching <span class="stat">334 of 440</span> enrolled students and a path to <strong>doubling</strong> the paired-evidence base.” Every number was right — the doubling meant 109 going to roughly 220. But put “doubling” next to “334 of 440” and the reader’s eye computes an impossible 668. Correct data, false reading.</p>
+<p>A report cover read: “reaching <span class="stat">334 of 440</span> enrolled students and a path to <strong>doubling</strong> the number of students with paired before-and-after evidence.” Every number was right — the doubling meant 109 going to roughly 220. But put “doubling” next to “334 of 440” and the reader’s eye computes an impossible 668. Correct data, false reading.</p>
 </div>
 <div class="slide">
 <div class="slide-label">3 / 4 — The Requirement</div>
@@ -491,7 +491,7 @@ ${sl.slice(1).map(x=>x.outerHTML).join("")}</details>
 <summary>Show the other three cards — The Proof, The Requirement, The Fix Shape</summary>
 <div class="slide">
 <div class="slide-label">2 / 4 — The Proof</div>
-<p>My version: phase 2’s exact numbers reaching phase 3 as lossy conversational summary, then a hollow phase poisoning everything downstream while the final report read beautifully. Until each phase boundary became a checkable artifact, localizing a cascade meant re-reading a 90-minute transcript by hand.</p>
+<p>My version: phase 2 computed exact numbers, but they reached phase 3 only as a lossy conversational summary; then a phase that did no real work poisoned everything downstream — all while the final report still read beautifully. Until each phase boundary became a checkable artifact, localizing a cascade meant re-reading a 90-minute transcript by hand.</p>
 </div>
 <div class="slide">
 <div class="slide-label">3 / 4 — The Requirement</div>
@@ -511,7 +511,7 @@ ${sl.slice(1).map(x=>x.outerHTML).join("")}</details>
 <div class="carousel" data-id="C9">
 <div class="slide">
 <div class="slide-label">1 / 4 — The Wall</div>
-<p>A multi-step agent drops a step — or collapses a whole dispatch-subagents architecture into one inline pass — and still emits deliverables that look finished. From the outside: success. Underneath: hollow. This failure does not announce itself, ever.</p>
+<p>A multi-step agent drops a step — or collapses an architecture that was supposed to fan work out to separate sub-agents into a single inline pass — and still emits deliverables that look finished. From the outside: success. Underneath: hollow. This failure does not announce itself, ever.</p>
 </div>
 <details class="more-cards">
 <summary>Show the other three cards — The Proof, The Requirement, The Fix Shape</summary>
@@ -543,7 +543,7 @@ ${sl.slice(1).map(x=>x.outerHTML).join("")}</details>
 <summary>Show the other three cards — The Proof, The Requirement, The Fix Shape</summary>
 <div class="slide">
 <div class="slide-label">2 / 4 — The Proof</div>
-<p>An empty environment variable made my logging hook silently no-op. Hooks installed mid-session didn’t fire until restart: one district’s run captured <span class="stat">0 of 26</span> expected events and finished “successfully.” The report was right. The telemetry was fiction — and nothing knew.</p>
+<p>An empty environment variable made my logging hook silently do nothing. Hooks installed mid-session didn’t fire until restart: one district’s run captured <span class="stat">0 of 26</span> expected events and finished “successfully.” The report was right. The telemetry was fiction — and nothing knew.</p>
 </div>
 <div class="slide">
 <div class="slide-label">3 / 4 — The Requirement</div>
@@ -937,7 +937,7 @@ const MODES = [
 <p>`,
     `</p>
 <p>In my system, a multi-year analysis could legitimately mean at least three different things (tracking the same students' growth across years, comparing this year’s cohort against last year’s, or trending school-wide results over time). So I defined the three ways we do it and wrote selection rules based on the shape of the district’s data. That handles the ambiguity machines can settle.</p>
-<p>For the ambiguity they can’t: when a renewal-report request hits a district running our courses in multiple subjects, the system stops and asks me which subject I mean (or whether I want all of them) instead of guessing.</p>
+<p>For the ambiguity they can’t: when someone asks the system to build a district’s renewal report and that district runs our courses in several subjects (e.g. English and math), the system stops and asks me which subject I wanted instead of guessing.</p>
 <p>`,
     `</p>
 <p class="req">Ambiguity resolves through a defined menu of interpretations with selection rules — and when the rules can’t decide, the system asks the operator instead of guessing.</p>
@@ -953,7 +953,7 @@ const MODES = [
 <p>Drift under ambiguity at least has a cause you can fix with clearer instructions. The nastier discovery: a completely unambiguous spec <em>also</em> drifts on a long run. The model shortcuts, conflates adjacent steps, re-derives a format from memory instead of re-reading the doc two files away. <strong>Length and repetition are the enemy, not vagueness.</strong></p>
 <p>`,
     `</p>
-<p>I audited one end-to-end run of my report skill: <span class="stat">164 structured events emitted, six distinct drift modes</span> — with three correct reference docs sitting in the working directory the whole time. Separately, a 1,000-line skill spec that ran clean when I supervised it interactively started <strong>silently skipping steps</strong> the moment it ran as a background agent. Same spec. Same code. Same data.</p>
+<p>I audited one full, end-to-end run of my report-building engine. Across the run’s <span class="stat">164 logged events</span>, the output drifted from the spec in <span class="stat">six distinct ways</span> — even though the three reference documents that define the correct behavior sat in the working directory the entire time, available to read. Separately, a 1,000-line skill spec that ran clean when I supervised it interactively started <strong>silently skipping steps</strong> the moment it ran as a background agent. Same spec. Same code. Same data.</p>
 <p>`,
     `</p>
 <p class="req">Anything deterministic must be code, not prose the model re-interprets on every pass. The longer the run, the more this matters.</p>
@@ -969,7 +969,7 @@ const MODES = [
 <p>Hand the model a strict schema and it improvises: promotes a subtype into the type field because it’s “more specific,” adds helper fields that seem useful, writes the file one directory up from where it belongs. Each deviation is locally reasonable. Every one breaks the downstream tools that parse the output.</p>
 <p>`,
     `</p>
-<p>In that same 164-event audit: the subtype <code>sql_query</code> was promoted into the <code>type:</code> field on <span class="stat">39 of 164 events</span>; an invented <code>entry: START/END</code> field appeared on 34; nine invented subtypes fell outside the canonical enum; the journal landed in the wrong directory.</p>
+<p>In that same 164-event audit: <code>sql_query</code> is a valid <code>subtype:</code> in my schema, but on <span class="stat">39 of 164 events</span> the model wrote it into the <code>type:</code> field instead, which is the parent field of <code>subtype:</code> and the wrong one to use here; an invented <code>entry: START/END</code> field appeared on 34; nine invented subtypes fell outside the schema’s allowed set of values; and the log file itself was written to the wrong directory.</p>
 <p>`,
     `</p>
 <p class="req">The producer of a fixed shape validates structure and rejects unknowns. The model passes data — never format.</p>
@@ -982,7 +982,7 @@ const MODES = [
   hook:"A number nobody computed, stated fluently.",
   beats:[
     `</p>
-<p>The model states a metric that doesn’t match any query that ran — or types an “expected result” from its prior of what the data probably says. The sentence is grammatical, specific, and wrong. In a customer-facing report, a fabricated number is worse than no number.</p>
+<p>The model states a metric that doesn’t match any query that ran — or it types in an “expected result” based on its own hunch of what the data probably says. The sentence is grammatical, specific, and wrong. In a customer-facing report, a fabricated number is worse than no number.</p>
 <p>`,
     `</p>
 <p>While registering a new SQL query with verified logic, the model hand-typed the expected result of that query instead of running it. The typed value was <span class="stat">530x off</span> from what the warehouse actually returned.</p>
@@ -1036,7 +1036,7 @@ const MODES = [
 <p>The subtlest trust failure I’ve hit: every value in the sentence is accurate, and the sentence still lies — because of how the values sit next to each other. The output of a report isn’t the number; it’s the meaning the reader walks away with.</p>
 <p>`,
     `</p>
-<p>A report cover read: “reaching <span class="stat">334 of 440</span> enrolled students and a path to <strong>doubling</strong> the paired-evidence base.” Every number was right — the doubling meant 109 going to roughly 220. But put “doubling” next to “334 of 440” and the reader’s eye computes an impossible 668. Correct data, false reading.</p>
+<p>A report cover read: “reaching <span class="stat">334 of 440</span> enrolled students and a path to <strong>doubling</strong> the number of students with paired before-and-after evidence.” Every number was right — the doubling meant 109 going to roughly 220. But put “doubling” next to “334 of 440” and the reader’s eye computes an impossible 668. Correct data, false reading.</p>
 <p>`,
     `</p>
 <p class="req">Check how a number will be read, not only whether it is right. A multiplier must bind explicitly to its base.</p>
@@ -1052,7 +1052,7 @@ const MODES = [
 <p>One phase retrieves weak data. The next synthesizes on top of it. A third acts on the flawed synthesis. The final output sounds coherent and intelligent — because the last model in the chain is very good at sounding coherent. No layer actually proved anything, and the more sophisticated the orchestration, the more places the break can hide.</p>
 <p>`,
     `</p>
-<p>My version: phase 2's exact numbers reaching phase 3 as lossy conversational summary, then a hollow phase poisoning everything downstream while the final report read beautifully. Until each phase boundary became a checkable artifact, localizing a cascade meant re-reading a 90-minute transcript by hand.</p>
+<p>My version: phase 2 computed exact numbers, but they reached phase 3 only as a lossy conversational summary; then a phase that did no real work poisoned everything downstream — all while the final report still read beautifully. Until each phase boundary became a checkable artifact, localizing a cascade meant re-reading a 90-minute transcript by hand.</p>
 <p>`,
     `</p>
 <p class="req">Deep orchestration must decompose into phases that each prove their own correctness — or a coherent-sounding whole hides a broken part you cannot find.</p>
@@ -1065,7 +1065,7 @@ const MODES = [
   hook:"A step quietly dropped — output still looks complete. Success by appearance.",
   beats:[
     `</p>
-<p>A multi-step agent drops a step — or collapses a whole dispatch-subagents architecture into one inline pass — and still emits deliverables that look finished. From the outside: success. Underneath: hollow. This failure does not announce itself, ever.</p>
+<p>A multi-step agent drops a step — or collapses an architecture that was supposed to fan work out to separate sub-agents into a single inline pass — and still emits deliverables that look finished. From the outside: success. Underneath: hollow. This failure does not announce itself, ever.</p>
 <p>`,
     `</p>
 <p>One run executed every phase <strong>inline</strong> instead of dispatching them: substantive-looking deliverables, <span class="stat">zero telemetry</span>, and about 115 false alarms from confused downstream checks. An earlier run had silently dropped an entire analysis phase and two customer PDFs — nothing checked for them, so nothing noticed. The hardening that followed cut detection from <span class="stat">~90 minutes to ~30 seconds</span>.</p>
@@ -1084,7 +1084,7 @@ const MODES = [
 <p>You build the monitoring. Then the monitoring breaks silently — a misconfigured environment, a hook installed mid-session that never fires — and every run since has looked clean precisely because the thing that would have complained was dead. Observability has failure modes of its own.</p>
 <p>`,
     `</p>
-<p>An empty environment variable made my logging hook silently no-op. Hooks installed mid-session didn’t fire until restart: one district’s run captured <span class="stat">0 of 26</span> expected events and finished “successfully.” The report was right. The telemetry was fiction — and nothing knew.</p>
+<p>An empty environment variable made my logging hook silently do nothing. Hooks installed mid-session didn’t fire until restart: one district’s run captured <span class="stat">0 of 26</span> expected events and finished “successfully.” The report was right. The telemetry was fiction — and nothing knew.</p>
 <p>`,
     `</p>
 <p class="req">An end-of-run assertion that the telemetry captured reality — and the checker shares code with the thing it checks, so the two can never drift apart.</p>
