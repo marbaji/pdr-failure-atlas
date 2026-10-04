@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>The Failure-Mode Atlas - Proof-Driven Requirements</title>
-<meta name="description" content="Interactive companion to the essay 'Proof-Driven Requirements': 19 agent failure modes across six families.">
+<meta name="description" content="Interactive companion to the essay 'Proof-Driven Requirements': 19 agent failure modes across five families, and an appendix.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400;1,6..72,500&#038;family=Archivo:wght@500;600;700&#038;family=IBM+Plex+Mono:wght@400;500&#038;display=swap" rel="stylesheet">
@@ -83,6 +83,9 @@
 .ptr-scope .atlas-static details.more-cards summary { font-family: var(--sans); font-size: 0.78rem; font-weight: 600; color: var(--accent);
     padding: 0.8rem 1.3rem; cursor: pointer; }
 .ptr-scope .atlas-static details.more-cards .slide { border-top: 1px dashed var(--hair); }
+/* two intro lines above the atlas: the page's body paragraph style; outside #atlas so they show with and without JavaScript */
+.ptr-scope .atlas-intro { margin: 0.4rem 0 0; }
+.ptr-scope .atlas-intro a { color: var(--accent); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 2px; }
 .ptr-scope .atlas-shell { margin: 2.2rem 0 0; }
 .ptr-scope .atlas-tabwrap { position: sticky; top: 0; z-index: 20;
     background: var(--paper); padding: 0.8rem 0 0; }
@@ -255,6 +258,7 @@ html, body { background: #fbf9f4; }
 </style>
 </head><body style="margin:0;">
 <div class="ptr-scope">
+<p class="atlas-intro">This atlas is an interactive companion to my essay <a href="https://blog.mohannadarbaji.com/proof-driven-requirements-the-new-agile-for-building-ai-systems-84680268a270">Proof-Driven Requirements: The New Agile for Building AI Systems</a>. It walks through 19 ways I have seen an AI agent (a language model running multi-step work on its own) fail, grouped into five families, and an appendix compares them with two published catalogs of agent failures.</p>
 <div id="atlas"> <!-- STATIC FALLBACK (auto-generated from the MODES array below) for JS-disabled viewers: iMessage/Quick Look previews, reader modes, some email clients. Browsers with JS replace this whole div via atlas.innerHTML. Per mode: card 1 (The Wall) visible, cards 2-4 inside a native 
 
 <details> toggle (works without JS in real browsers). If you edit MODES, regenerate in a browser console: let out=""; for (const k of ["A","B","C","D","E","F"]) { showFamily(k,false); const c=document.querySelector(".atlas-panel").cloneNode(true); for (const car of c.querySelectorAll(".carousel")) { const sl=[...car.querySelectorAll(".slide")]; const labs=sl.slice(1).map(x=>x.querySelector(".slide-label").textContent.split("— ")[1]); car.innerHTML = sl[0].outerHTML + `
@@ -871,7 +875,7 @@ ${sl.slice(1).map(x=>x.outerHTML).join("")}</details>
 
 <footer class="page-foot">
 Interactive companion to the essay
-<a href="https://moarbaji.medium.com/proof-driven-requirements-the-new-agile-for-building-ai-systems-84680268a270">"Proof-Driven Requirements: The New Agile for Building AI Systems"</a>.
+<a href="https://blog.mohannadarbaji.com/proof-driven-requirements-the-new-agile-for-building-ai-systems-84680268a270">"Proof-Driven Requirements: The New Agile for Building AI Systems"</a>.
 </footer>
 <script>
 (function(){
